@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mx-auto">
     <div class="col-md-6 text-center">
         <img class="img-responsive center-block" src="{{user.image}}" alt="avatar" style="border-radius: 50%; width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
@@ -8,3 +8,13 @@
         <a class="btn  btn-primary" href="/users/{{user.id}}/edit">Edit</a>
     </div>
 </div>
+<div class="card mt-3">
+    <div class="card-header">
+    {{commentsCount}}則已評論餐廳
+    </div>
+    <div class="card-body">
+        {{#each user.Comments}}
+            <img class="me-2" src="{{this.Restaurant.image}}" alt="image" style="width: 15%">
+        {{/each}}
+    </div>
+    </div>
