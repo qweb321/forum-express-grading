@@ -37,10 +37,10 @@ const restaurantController = {
         include: [
           Category,
           { model: Comment, include: User }
-        ]
+        ],
+        order: [[Comment, 'createdAt', 'DESC']]
       })
       .then(restaurant => {
-        console.log(restaurant.toJSON())
         if (!restaurant) throw new Error("restaurant didn't exist!")
         restaurant.increment('viewCounts')
         res.render('restaurant', { restaurant: restaurant.toJSON() })
