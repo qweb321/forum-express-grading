@@ -1,8 +1,8 @@
 <div class="row">
-    <div class="col-md-4 text-center">
-        <img src="{{user.image}}https://loremflickr.com/g/320/240/girl/?random=${Math.random() * 100}" alt="avatar" style="border-radius: 50%">
+    <div class="col-md-6 text-center">
+        <img class="img-responsive center-block" src="{{user.image}}" alt="avatar" style="border-radius: 50%; width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
     </div>
-    <div class="col-md-8">
+    <div class="col-md-6">
         <h2>{{user.name}}</h2>
         <h3>{{user.email}}</h3>
         <a class="btn  btn-primary" href="/users/{{user.id}}/edit">Edit</a>

@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
-const db = require('../models')
-const { User } = db
+const { User } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const userController = {
   signUppage: (req, res) => {
@@ -52,6 +52,39 @@ const userController = {
         if (!user) throw new Error("User didn't exist!")
 
         return res.render('users/profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  editUser: (req, res, next) => {
+    User.findByPk(req.params.id, {
+      raw: true
+    })
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+
+        return res.render('users/edit-profile', { user })
+      })
+      .catch(err => next(err))
+  },
+  putUser: (req, res, next) => {
+    const { file } = req
+    if (!req.body.name) throw new Error('User name is required!')
+
+    Promise.all([
+      User.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([user, filePath]) => {
+        if (!user) throw new Error("User didn't exist!")
+
+        return user.update({
+          name: req.body.name,
+          image: filePath || user.image
+        })
+      })
+      .then(updateUser => {
+        req.flash('success_messages', 'user was successfully to update')
+        res.redirect(`/users/${updateUser.id}`)
       })
       .catch(err => next(err))
   }
