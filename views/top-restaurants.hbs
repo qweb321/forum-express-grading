@@ -24,7 +24,7 @@
                         <button class="btn btn-primary" href="/restaurants/{{this.id}}">Show</button>
                     </div>
                     <div class="p-2">
-                        {{#if this.isFollowed }}
+                        {{#if this.isFavorited }}
                         <form action="/favorite/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
                             <button type="submit" class="btn btn-danger">移除最愛</button>
                         </form>

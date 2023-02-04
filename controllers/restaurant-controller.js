@@ -103,7 +103,8 @@ const restaurantController = {
         const result = restaurants.map(rest => ({
           ...rest.toJSON(),
           description: rest.description.substring(0, 50),
-          favoritesCount: rest.FavoritedUsers.length
+          favoritesCount: rest.FavoritedUsers.length,
+          isFavorited: rest.FavoritedUsers.some(f => f.id === req.user.id)
         }))
         console.log(result)
         res.render('top-restaurants', { restaurants: result })
