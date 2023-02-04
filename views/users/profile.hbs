@@ -12,10 +12,10 @@
 </div>
 <div class="card mt-3">
     <div class="card-header">
-    {{commentsCount}}則已評論餐廳
+    {{comments.count}}則已評論餐廳
     </div>
     <div class="card-body">
-        {{#each user.Comments}}
+        {{#each comments.rows}}
             <img class="me-2" src="{{this.Restaurant.image}}" alt="image" style="width: 15%">
         {{/each}}
     </div>
