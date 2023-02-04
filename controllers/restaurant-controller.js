@@ -23,9 +23,11 @@ const restaurantController = {
       Category.findAll({ raw: true })
     ])
       .then(([restaurants, categories]) => {
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
         const data = restaurants.rows.map(rest => ({
           ...rest,
-          description: rest.description.substring(0, 50)
+          description: rest.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(rest.id)
         }))
         return res.render('restaurants', { restaurants: data, categories, categoryId, pagination: getPagination(limit, page, restaurants.count) })
       })
@@ -37,14 +39,17 @@ const restaurantController = {
         nest: true,
         include: [
           Category,
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers' }
         ],
         order: [[Comment, 'createdAt', 'DESC']]
       })
       .then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+
         if (!restaurant) throw new Error("restaurant didn't exist!")
         restaurant.increment('viewCounts')
-        res.render('restaurant', { restaurant: restaurant.toJSON() })
+        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited })
       })
       .catch(err => next(err))
   },
