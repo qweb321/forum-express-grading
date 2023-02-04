@@ -1,0 +1,29 @@
+{{> restaurant-tabs route='topUsers'}}
+<h1>美食達人</h1>
+<hr />
+<div class="row" style="text-align: center;">
+  {{#each users}}
+    <div class="col-3">
+      <a href="/users/{{this.id}}">
+        {{#if this.image}}
+          <img src="{{this.image}}" width="140px" height="140px" style="transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;" />
+        {{else}}
+          <img src="https://fakeimg.pl/140/10" width="140px" height="140px" />
+        {{/if}}
+      </a>
+      <h2>{{this.name}}</h2>
+      <span class="bg-secondary badge">追蹤人數：{{this.followerCount}}</span>
+      <p>
+        {{#if this.isFollowed }}
+          <form action="/following/{{this.id}}?_method=DELETE" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-danger">取消追蹤</button>
+          </form>
+        {{else}}
+          <form action="/following/{{this.id}}" method="POST" style="display: contents;">
+            <button type="submit" class="btn btn-primary">追蹤</button>
+          </form>
+        {{/if}}
+      </p>
+    </div>
+  {{/each}}
+</div>
