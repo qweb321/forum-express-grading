@@ -106,7 +106,8 @@ const restaurantController = {
           favoritesCount: rest.FavoritedUsers.length,
           isFavorited: rest.FavoritedUsers.some(f => f.id === req.user.id)
         }))
-        console.log(result)
+          .sort((a, b) => b.favoritesCount - a.favoritesCount)
+          .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
   }
