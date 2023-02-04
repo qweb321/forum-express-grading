@@ -45,6 +45,7 @@ const userController = {
     })
   },
   getUser: (req, res, next) => {
+    const loginUser = req.user
     Promise.all([
       User.findByPk(req.params.id, {
         nest: true,
@@ -55,11 +56,14 @@ const userController = {
       .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
 
-        return res.render('users/profile', { user: user.toJSON(), commentsCount: comments.count })
+        return res.render('users/profile', { user: user.toJSON(), commentsCount: comments.count, loginUser })
       })
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
+    if (req.user.id !== Number(req.params.id)) return res.redirect(`/users/${req.params.id}`)
+    // check if loginUser and requestUser is same
+
     User.findByPk(req.params.id, {
       raw: true
     })
@@ -80,7 +84,6 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
-
         return user.update({
           name: req.body.name,
           image: filePath || user.image
