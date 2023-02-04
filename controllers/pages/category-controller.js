@@ -1,4 +1,4 @@
-const { Category, Restaurant } = require('../models')
+const { Category, Restaurant } = require('../../models')
 
 const categoryController = {
   getCategories: (req, res, next) => {
