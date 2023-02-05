@@ -1,5 +1,6 @@
 const { Restaurant, Category, User } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
+const adminServices = require('../../services/admin-services')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
@@ -27,27 +28,12 @@ const adminController = {
   },
 
   postRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
-    const { file } = req
-    if (!name) throw new Error('Restaurant name is required!')
-
-    return imgurFileHandler(file)
-      .then(filePath =>
-        Restaurant.create({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || null,
-          categoryId
-        })
-      )
-      .then(() => {
-        req.flash('success_messages', 'Restaurant was successfully created')
-        res.redirect('/admin/restaurants')
-      })
-      .catch(err => next(err))
+    adminServices.postRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'restaurant was successfully created')
+      req.session.createdData = data
+      return res.redirect('/admin/restaurants')
+    })
   },
 
   getRestaurant: (req, res, next) => {
@@ -104,15 +90,13 @@ const adminController = {
   },
 
   deleteRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id)
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-
-        return restaurant.destroy()
-      })
-      .then(() => res.redirect('/admin/restaurants'))
-      .catch(err => next(err))
+    adminServices.deleteRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.session.deletedData = data
+      return res.redirect('/admin/restaurants')
+    })
   },
+
   getUsers: (req, res, next) => {
     User.findAll({ raw: true })
       .then(users => {
