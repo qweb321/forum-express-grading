@@ -1,7 +1,23 @@
-const { Restaurant } = require('../models')
+const { Restaurant, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
+  getRestaurants: (req, cb) => {
+    Restaurant.findAll({
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurants => {
+        restaurants.forEach(rest => {
+          if (rest.categoryId === null) {
+            rest.Category.name = '(未分類)'
+          }
+        })
+        return cb(null, restaurants)
+      })
+      .catch(err => cb(err))
+  },
   postRestaurant: (req, cb) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     if (!name) throw new Error('Restaurant name is required!')

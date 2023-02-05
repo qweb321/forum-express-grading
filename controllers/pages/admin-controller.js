@@ -4,20 +4,7 @@ const adminServices = require('../../services/admin-services')
 
 const adminController = {
   getRestaurants: (req, res, next) => {
-    Restaurant.findAll({
-      raw: true,
-      nest: true,
-      include: [Category]
-    })
-      .then(restaurants => {
-        restaurants.forEach(rest => {
-          if (rest.categoryId === null) {
-            rest.Category.name = '(未分類)'
-          }
-        })
-        res.render('admin/restaurants', { restaurants })
-      })
-      .catch(err => next(err))
+    adminServices.getRestaurants(req, (err, data) => err ? next(err) : res.render('admin/restaurants', { restaurants: data }))
   },
 
   createRestaurant: (req, res) => {
