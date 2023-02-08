@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   ReserveInfo.init({
     restaurantId: DataTypes.INTEGER,
-    openingTime: DataTypes.DATE,
+    openingTime: DataTypes.STRING,
     twoSeater: DataTypes.INTEGER,
     fourSeater: DataTypes.INTEGER,
     sixSeater: DataTypes.INTEGER
