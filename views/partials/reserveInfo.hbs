@@ -1,5 +1,6 @@
 <h3>Reservation</h3>
 <p>(double click to edit)</p>
+<button type="button" class="btn btn-success" onclick="addTime()">Add new opening time</button>
 <div class="d-flex align-items-center pt-3 pb-3 my-3 text-white-50 bg-purple">
   <table class="table align-middle">
     <thead class="thead-dark">
@@ -13,19 +14,20 @@
         <th scope="col"></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="reservation-table">
       {{#each reserveInfos}}
         <tr class="text-center">
-          <form action="/admin/reservations/{{this.id}}" method="POST">
+          
             <th scope="row">{{this.id}}</th>
-            <td><input class="reservation-input form-control-plaintext" type="text" name="openingTime" value="{{this.openingTime}}" onfocusout="looseFocus()" style="width: 5rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="twoSeater" value="{{this.twoSeater}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="fourSeater" value="{{this.fourSeater}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="sixSeater" value="{{this.sixSeater}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input class="reservation-input form-control-plaintext" type="text" name="openingTime" value="{{this.openingTime}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 5rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext" type="text" name="twoSeater" value="{{this.twoSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext" type="text" name="fourSeater" value="{{this.fourSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext" type="text" name="sixSeater" value="{{this.sixSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
             <td>
-              <button type="submit" class="btn btn-link reservation-edit" onclick="postEdit()">Edit</button>
+              <form action="/admin/reservations/{{this.id}}" method="POST" id="edit-form-{{this.id}}" style="display: inline;">
+                <button type="submit" class="btn btn-link reservation-edit" form="edit-form-{{this.id}}">Edit</button>
+              </form>
             </td>
-          </form>
           <td>
             <form action="/admin/reservations/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
               <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除嗎？`)">Delete</button>
@@ -43,11 +45,35 @@
     input.removeAttribute('readonly')
   })
 )
-function looseFocus(){
+function looseFocus() {
    document.querySelectorAll(".reservation-input").forEach((input) => {
     if (input.readOnly === false) {
       input.readOnly = true
     }
    })
 }
+
+function cancelCreate() {
+  document.querySelector('.create-row').remove()
+}
+
+function addTime() {
+  const newRow = document.querySelector(".reservation-table").insertRow(-1)
+    newRow.classList.add("create-row")
+    newRow.innerHTML = `
+    
+      <th scope="row"></th>
+      <td><input class="reservation-input" type="time" name="openingTime" form="create-form" required ></td>
+      <td><input  class="reservation-input" type="text" name="twoSeater"  form="create-form" style="width: 2rem"></td>
+      <td><input  class="reservation-input" type="text" name="fourSeater" form="create-form" style="width: 2rem"></td>
+      <td><input  class="reservation-input" type="text" name="sixSeater" form="create-form" style="width: 2rem"></td>
+      <td>
+        <form action="/admin/reservations/create/{{restaurant.id}}" method="POST" id="create-form">
+          <button type="submit" class="btn btn-link" form="create-form">Create</button>
+        </form>
+      </td>
+      <td><button class="btn btn-outline-secondary" onclick="cancelCreate()">Back</a></td>
+  `
+}
+
 </script>
