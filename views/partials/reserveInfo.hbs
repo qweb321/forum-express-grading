@@ -19,10 +19,10 @@
         <tr class="text-center">
           
             <th scope="row">{{this.id}}</th>
-            <td><input class="reservation-input form-control-plaintext" type="text" name="openingTime" value="{{this.openingTime}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 5rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="twoSeater" value="{{this.twoSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="fourSeater" value="{{this.fourSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="sixSeater" value="{{this.sixSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input class="reservation-input form-control-plaintext" type="time" name="openingTime" value="{{this.openingTime}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="text-align:center;" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext mx-auto" type="text" name="twoSeater" value="{{this.twoSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext mx-auto" type="text" name="fourSeater" value="{{this.fourSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext mx-auto" type="text" name="sixSeater" value="{{this.sixSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
             <td>
               <form action="/admin/reservations/{{this.id}}" method="POST" id="edit-form-{{this.id}}" style="display: inline;">
                 <button type="submit" class="btn btn-link reservation-edit" form="edit-form-{{this.id}}">Edit</button>
@@ -59,7 +59,7 @@ function cancelCreate() {
 
 function addTime() {
   const newRow = document.querySelector(".reservation-table").insertRow(-1)
-    newRow.classList.add("create-row")
+    newRow.classList.add("create-row", "text-center")
     newRow.innerHTML = `
     
       <th scope="row"></th>
@@ -68,11 +68,11 @@ function addTime() {
       <td><input  class="reservation-input" type="text" name="fourSeater" form="create-form" style="width: 2rem"></td>
       <td><input  class="reservation-input" type="text" name="sixSeater" form="create-form" style="width: 2rem"></td>
       <td>
-        <form action="/admin/reservations/create/{{restaurant.id}}" method="POST" id="create-form">
+        <form action="/admin/reservations/create/{{restaurant.id}}" method="POST" id="create-form" style="display: inline;>
           <button type="submit" class="btn btn-link" form="create-form">Create</button>
         </form>
       </td>
-      <td><button class="btn btn-outline-secondary" onclick="cancelCreate()">Back</a></td>
+      <td><button class="btn btn-outline-secondary" onclick="cancelCreate()">Cancel</a></td>
   `
 }
 
