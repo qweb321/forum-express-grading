@@ -1,4 +1,5 @@
 <h3>Reservation</h3>
+<p>(double click to edit)</p>
 <div class="d-flex align-items-center pt-3 pb-3 my-3 text-white-50 bg-purple">
   <table class="table align-middle">
     <thead class="thead-dark">
@@ -15,18 +16,18 @@
     <tbody>
       {{#each reserveInfos}}
         <tr class="text-center">
-          <form action="/admin/reservation/{{this.id}}" method="POST">
+          <form action="/admin/reservations/{{this.id}}" method="POST">
             <th scope="row">{{this.id}}</th>
-            <td><input class="reservation-input form-control-plaintext" type="text" name="openingTime" value="{{this.openingTime}}" style="width: 5rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="twoSeater" value="{{this.twoSeater}}" style="width: 2rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="fourSeater" value="{{this.fourSeater}}" style="width: 2rem" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext" type="text" name="sixSeater" value="{{this.sixSeater}}" style="width: 2rem" readonly></td>
+            <td><input class="reservation-input form-control-plaintext" type="text" name="openingTime" value="{{this.openingTime}}" onfocusout="looseFocus()" style="width: 5rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext" type="text" name="twoSeater" value="{{this.twoSeater}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext" type="text" name="fourSeater" value="{{this.fourSeater}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext" type="text" name="sixSeater" value="{{this.sixSeater}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
             <td>
               <button type="submit" class="btn btn-link reservation-edit" onclick="postEdit()">Edit</button>
             </td>
           </form>
           <td>
-            <form action="/admin/reservation/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+            <form action="/admin/reservations/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
               <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除嗎？`)">Delete</button>
             </form>
           </td>
@@ -42,4 +43,11 @@
     input.removeAttribute('readonly')
   })
 )
+function looseFocus(){
+   document.querySelectorAll(".reservation-input").forEach((input) => {
+    if (input.readOnly === false) {
+      input.readOnly = true
+    }
+   })
+}
 </script>

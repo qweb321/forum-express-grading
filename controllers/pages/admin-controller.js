@@ -1,4 +1,4 @@
-const { Restaurant, Category, User } = require('../../models')
+const { Restaurant, Category, User, ReserveInfo } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 const adminServices = require('../../services/admin-services')
 
@@ -24,14 +24,19 @@ const adminController = {
   },
 
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    Promise.all([Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
       include: [Category]
+    }),
+    ReserveInfo.findAll({
+      where: { restaurantId: req.params.id },
+      raw: true
     })
-      .then(restaurant => {
+    ])
+      .then(([restaurant, reserveInfos]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant, reserveInfos })
       })
       .catch(err => next(err))
   },
