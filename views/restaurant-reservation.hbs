@@ -1,0 +1,57 @@
+<div class="mx-auto" style="width: 80%;">
+    <div class="information" >
+        <img src="{{restaurant.image}}" class="d-flex mx-auto" alt="" style="width:100%;">
+        <h1 class="info">{{restaurant.name}}</h1>
+        <div class="info d-flex flex-row mb-3 mx-auto">
+            <div class="info" style="width:50%;">
+                <p class="info"><i class="fa-solid fa-location-dot"></i>  {{restaurant.address}}</p>
+                <p class="info"><i class="fa-solid fa-phone"></i> {{restaurant.tel}}</p>
+            </div>
+            <div class="info text-center" style="width:50%;">
+                <iframe src="{{mapSrc}}" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <form class="reservation" action="/order/{{restaurant.id}}" method="POST">
+        <div class="choose row">
+            <div class="col choose-person">
+                <p>用餐人數</p>
+                <div class="row person-select ms-1">
+                    <select class="col me-2 form-select" name="adult" id="adult">
+                        <option value="1">1位大人</option>ß
+                        <option value="2">2位大人</option>
+                        <option value="3">3位大人</option>
+                        <option value="4">4位大人</option>
+                        <option value="5">5位大人</option>
+                        <option value="6">6位大人</option>
+                    </select>
+                     <select class="col form-select" name="children" id="children">
+                        <option value="1">1位小孩</option>
+                        <option value="2">2位小孩</option>
+                        <option value="3">3位小孩</option>
+                        <option value="4">4位小孩</option>
+                        <option value="5">5位小孩</option>
+                        <option value="6">6位小孩</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col choose-time">
+                <p>用餐時間</p>
+                <div class="time-select">
+                    <input type="date" class="form-control" name="orderTime">
+                </div>
+            </div>
+        </div>
+        <hr>
+        <p>用餐時段</p>
+        <p>＊灰色表示該時段訂位已滿</p>
+        <div class="select-time">
+                {{#each reservation}}
+                    <input type="radio" class="btn-check select" name="reservedTime" id="{{this.openingTime}}" value="{{this.openingTime}}">
+                    <label class="btn btn-outline-secondary" for="{{this.openingTime}}">{{this.openingTime}}</label>
+                {{/each}}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3" style="width:100%;">立即訂位</button>
+    </form>
+</div>

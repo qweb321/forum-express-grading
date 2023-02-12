@@ -12,6 +12,7 @@
         <li><strong>Tel:</strong> {{restaurant.tel}}</li>
         <li><strong>Address:</strong> {{restaurant.address}}</li>
         <li><a class="btn btn-primary mt-2" href="/restaurants/{{restaurant.id}}/dashboard" role="button">dashboard</a></li>
+        <li><a class="btn btn-primary mt-2" href="/order/{{restaurant.id}}" role="button">立即訂位</a></li>
         <div class="d-flex">
           <div class="d-flex">
             {{#if isFavorited }}

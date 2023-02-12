@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../../models')
+const { Restaurant, Category, Comment, User, ReserveInfo } = require('../../models')
 const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 const Sequelize = require('sequelize')
 
@@ -110,6 +110,22 @@ const restaurantController = {
           .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
+  },
+  getReservation: (req, res, next) => {
+    Promise.all([
+      Restaurant.findByPk(req.params.restaurantId, { raw: true }),
+      ReserveInfo.findAll({
+        where: { restaurantId: req.params.restaurantId },
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurant, reservation]) => {
+        const key = process.env.GOOGLE_KEY
+        const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${key}&q=${restaurant.address}&language=tw`
+        res.render('restaurant-reservation', { restaurant, reservation, mapSrc })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController

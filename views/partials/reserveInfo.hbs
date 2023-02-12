@@ -17,7 +17,6 @@
     <tbody class="reservation-table">
       {{#each reserveInfos}}
         <tr class="text-center">
-          
             <th scope="row">{{this.id}}</th>
             <td><input class="reservation-input form-control-plaintext" type="time" name="openingTime" value="{{this.openingTime}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="text-align:center;" readonly></td>
             <td><input  class="reservation-input form-control-plaintext mx-auto" type="text" name="twoSeater" value="{{this.twoSeater}}" form="edit-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
@@ -40,11 +39,12 @@
 </div>
 
 <script>
- document.querySelectorAll(".reservation-input").forEach((input) =>
-  input.addEventListener("dblclick", function onInputClick(event) {
-    input.removeAttribute('readonly')
-  })
-)
+  const editInputs = document.querySelectorAll(".reservation-input")
+  editInputs.forEach((input) =>
+    input.addEventListener("dblclick", function onInputClick(event) {
+      input.removeAttribute('readonly')
+    })
+  )
 function looseFocus() {
    document.querySelectorAll(".reservation-input").forEach((input) => {
     if (input.readOnly === false) {
@@ -68,7 +68,7 @@ function addTime() {
       <td><input  class="reservation-input" type="text" name="fourSeater" form="create-form" style="width: 2rem"></td>
       <td><input  class="reservation-input" type="text" name="sixSeater" form="create-form" style="width: 2rem"></td>
       <td>
-        <form action="/admin/reservations/create/{{restaurant.id}}" method="POST" id="create-form" style="display: inline;>
+        <form action="/admin/reservations/create/{{restaurant.id}}" method="POST" id="create-form" style="display: inline";>
           <button type="submit" class="btn btn-link" form="create-form">Create</button>
         </form>
       </td>
