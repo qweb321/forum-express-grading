@@ -7,7 +7,6 @@ const restaurantController = {
   getReservation: (req, res, next) => {
     console.log(req.query)
     const { orderTime, adult, children } = req.query
-    console.log(req.params)
     ReserveInfo.findAll({
       where: {
         restaurantId: req.params.id

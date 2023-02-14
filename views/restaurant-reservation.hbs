@@ -14,7 +14,7 @@
         </div>
     </div>
     <hr>
-    <form class="reservation" action="/order/{{restaurant.id}}" method="GET">
+    <form class="reservation" action="/order/{{restaurant.id}}" method="POST">
         <div class="choose row">
             <div class="col choose-person">
                 <p>用餐人數</p>
@@ -45,37 +45,14 @@
                 </div>
             </div>
         </div>
-    </form>
-    <hr>
-    <p>用餐時段</p>
-    <p>＊灰色表示該時段訂位已滿</p>
-    <form class="reservation" action="/order/{{restaurant.id}}" method="POST">
+        <hr>
+        <p>用餐時段</p>
+        <p>＊灰色表示該時段訂位已滿</p>
         <div class="select-time">
         </div>
-        <input type="text" value="{{adult}}" name="adult" class="d-none">
-        <input type="text" value="{{children}}" name="children" class="d-none">
-        <input type="text" value="{{orderTime}}" name="orderTime" class="d-none">
         <button type="submit" class="btn btn-primary mt-3" style="width:100%;">立即訂位</button>
     </form>
 </div>
 
 <script src="../node_modules/axios/dist/axios.min.js"></script>
 <script src="../index.js"></script>
-
-<script>
-    function getDate() {
-        const date = new Date(); 
-        let year = date.getFullYear(); 
-        let month = date.getMonth() + 1;
-        let day = date.getDate();
-        if (month < 10){ month = "0"+ month}
-        if (day < 10){ day = "0" + day} 
-        return year+"-"+month+"-"+day
-    }
-    const chooseOrderTime = document.getElementById('orderTime')
-    chooseOrderTime.min = getDate()
-    chooseOrderTime.value = getDate()
-    
-
-    
-</script>

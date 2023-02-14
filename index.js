@@ -4,6 +4,21 @@ const adult = document.querySelector('#adult')
 const children = document.querySelector('#children')
 const selectTime = document.querySelector('.select-Time')
 
+function getDate() {
+  const date = new Date(); 
+  let year = date.getFullYear(); 
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  if (month < 10){ month = "0"+ month}
+  if (day < 10){ day = "0" + day} 
+  return year+"-"+month+"-"+day
+}
+const chooseOrderTime = document.getElementById('orderTime')
+chooseOrderTime.min = getDate()
+chooseOrderTime.value = getDate()
+
+
+
 orderTime.addEventListener('change', loadData)
 adult.addEventListener('change', loadData)
 children.addEventListener('change', loadData)

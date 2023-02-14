@@ -126,6 +126,13 @@ const restaurantController = {
         res.render('restaurant-reservation', { restaurant, reservation, mapSrc })
       })
       .catch(err => next(err))
+  },
+  postReservation: (req, res, next) => {
+    const { reservedTime, adult, children, orderTime } = req.body
+    Restaurant.findByPk(req.params.restaurantId, { raw: true })
+      .then(restaurant => {
+        res.render('reservation-check', { restaurant, reservedTime, adult, children, orderTime })
+      })
   }
 }
 module.exports = restaurantController
