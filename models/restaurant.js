@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
         as: 'LikedUsers' // 幫這個關聯取個名稱
       })
       Restaurant.hasMany(models.ReserveInfo, { foreignKey: 'restaurantId' })
+      Restaurant.belongsToMany(models.Customer, {
+        through: models.Booking,
+        foreignKey: 'restaurantId',
+        as: 'BookingCustomers'
+      })
     }
   };
   Restaurant.init({
