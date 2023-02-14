@@ -1,6 +1,7 @@
-const { Restaurant, Category, Comment, User, ReserveInfo } = require('../../models')
+const { Restaurant, Category, Comment, User, ReserveInfo, Customer, Booking } = require('../../models')
 const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 const Sequelize = require('sequelize')
+const dayjs = require('dayjs')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -133,6 +134,57 @@ const restaurantController = {
       .then(restaurant => {
         res.render('reservation-check', { restaurant, reservedTime, adult, children, orderTime })
       })
+      .catch(err => next(err))
+  },
+  postBookingForm: (req, res, next) => {
+    const { name, gender, phone, email, adult, children, date, time, remark } = req.body
+    if (!name || !phone || !email) throw new Error('姓名、手機號碼及Email為必填欄位')
+    Promise.all([
+      ReserveInfo.findOne({
+        where: {
+          restaurantId: req.params.restaurantId,
+          openingTime: time
+        }
+      }),
+      Customer.create({
+        name,
+        gender,
+        phone,
+        email,
+        remark: remark || 'no require'
+      })
+    ])
+      .then(([reservation, customer]) => {
+        if (!customer) throw new Error('訂位失敗，請重新確認')
+        if (!reservation) throw new Error('訂位時間未選擇，請回上一頁重新選擇')
+        return Booking.create({
+          restaurantId: req.params.restaurantId,
+          customerId: customer.id,
+          date,
+          numberOfAdult: adult,
+          numberOfChildren: children,
+          reserveinfoId: reservation.id
+        })
+      })
+      .then(info1 => {
+        const info = info1.toJSON()
+        console.log(info)
+        console.log(info.customerId)
+        return Booking.findOne({
+          where: {
+            customerId: info.customerId
+          },
+          raw: true,
+          nest: true,
+          include: [Restaurant, Customer, ReserveInfo]
+        })
+      })
+      .then(info => {
+        console.log(info)
+        info.date = dayjs(info.date).format('YYYY/MM/DD')
+        res.render('reservation-complete', { info })
+      })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController

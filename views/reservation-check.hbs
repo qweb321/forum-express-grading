@@ -1,4 +1,5 @@
 <div class="row">
+    {{> messages}}
     <div class="card col" style="width: 18rem;">
         <img class="card-img-top mt-2" src="{{restaurant.image}}" alt="Card image cap">
         <div class="card-body">
@@ -9,12 +10,13 @@
         </div>
     </div>
     <div class="card col">
-        <form action="" method="POST">
+        <h2 class="mx-auto mt-3">確認訂位及填寫聯絡資訊</h2>
+        <form action="/booking/{{restaurant.id}}/form" method="POST">
             <div class="card-body p-2">
                 <div class="mb-3 row">
                     <label for="name" class="form-label">訂位人姓名</label>
                     <div class="col">
-                        <input type="text" class="form-control" id="name" name="name">
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="col form-check gender mt-2">
                         <div class="form-check form-check-inline">
@@ -29,11 +31,15 @@
                 </div>
                 <div class="mb-3">
                         <label for="phone" class="form-label">訂位人手機號碼</label>
-                        <input type="text" class="form-control" id="phone" name="phone">
+                        <input type="tel" class="form-control" id="phone" name="phone" onfocusout="looseFocus()" required>
                 </div>
                 <div class="mb-3">
                         <label for="email" class="form-label">訂位人Email</label>
-                        <input type="email" class="form-control" id="email" name="email">
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="text" class="d-none" id="adult" name="adult" value="{{adult}}">
+                        <input type="text" class="d-none" id="children" name="children" value="{{children}}">
+                        <input type="text" class="d-none" id="date" name="date" value="{{orderTime}}">
+                        <input type="text" class="d-none" id="time" name="time" value="{{reservedTime}}">
                 </div>
                 <div class="mb-3">
                         <label for="remark" class="form-label">其他備註</label>
@@ -48,3 +54,12 @@
         
     </div>
 </div>
+
+<script>
+    const phoneNumber = document.querySelector('#phone')
+    function looseFocus () {
+        if (isNaN(phoneNumber.value)) {
+            alert('手機號碼格式錯誤！')
+        }
+    }
+</script>

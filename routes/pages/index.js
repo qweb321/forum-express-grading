@@ -36,9 +36,9 @@ router.delete('/following/:userId', authenticated, userController.removeFollowin
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
-router.get('/order/:restaurantId', authenticated, restController.getReservation)
-router.post('/order/:restaurantId', authenticated, restController.postReservation)
-
+router.post('/booking/:restaurantId/form', authenticated, restController.postBookingForm)
+router.get('/booking/:restaurantId', authenticated, restController.getReservation)
+router.post('/booking/:restaurantId', authenticated, restController.postReservation)
 
 router.use('/', (req, res) => res.redirect('/restaurants'))
 router.use('/', generalErrorHandler)
