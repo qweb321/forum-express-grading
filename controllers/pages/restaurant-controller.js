@@ -2,6 +2,7 @@ const { Restaurant, Category, Comment, User, ReserveInfo, Customer, Booking } = 
 const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 const Sequelize = require('sequelize')
 const dayjs = require('dayjs')
+const nodemailer = require('nodemailer')
 
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -168,8 +169,6 @@ const restaurantController = {
       })
       .then(info1 => {
         const info = info1.toJSON()
-        console.log(info)
-        console.log(info.customerId)
         return Booking.findOne({
           where: {
             customerId: info.customerId
@@ -180,8 +179,44 @@ const restaurantController = {
         })
       })
       .then(info => {
-        console.log(info)
         info.date = dayjs(info.date).format('YYYY/MM/DD')
+        console.log(info)
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true, // true for 465, false for other ports
+          auth: {
+            user: process.env.MODEMAILER_USER,
+            pass: process.env.MODEMAILER_PASS
+          }
+        })
+
+        const mailOptions = {
+          from: process.env.MODEMAILER_USER,
+          to: `${info.Customer.email}`,
+          subject: '訂位成功通知',
+          text: 'That was easy!',
+          html: `<div style="background-color:#ffffff;">
+                  <div style="margin:0px auto;max-width:2560px;">
+                    <div style="margin: auto;">
+                      <img src="${info.Restaurant.image}" alt=""  style="display: block;width: 200px; margin-left: auto; margin-right: auto;">
+                      <p style="text-align: center;">${info.Customer.name}小姐/先生您好</p>
+                      <p style="text-align: center;">已為您安排訂位</p>
+                          <div style="border: 1px solid gray; width: 30vw; margin: auto;">
+                              <p style="font-weight: bold; text-align: center;">${info.date}</p>
+                              <p style="font-weight: bold; font-size: 2rem; color: #e58646; text-align: center;">${info.ReserveInfo.openingTime}</p>
+                              <p style="text-align: center;">${info.numberOfAdult}大${info.numberOfChildren}小</p>
+                          </div>
+                    </div> 
+                  </div>
+          </div>`
+        }
+
+        transporter.sendMail(mailOptions, function (error, infos) {
+          if (error) {
+            console.log(error)
+          }
+        })
         res.render('reservation-complete', { info })
       })
       .catch(err => next(err))
