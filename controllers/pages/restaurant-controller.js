@@ -166,7 +166,6 @@ const restaurantController = {
         } else {
           table = 'sixSeater'
         }
-        console.log(table)
 
         return Booking.create({
           restaurantId: req.params.restaurantId,
@@ -192,7 +191,6 @@ const restaurantController = {
       })
       .then(info => {
         info.date = dayjs(info.date).format('YYYY/MM/DD')
-        console.log(info)
         const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
           port: 465,

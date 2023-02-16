@@ -22,15 +22,12 @@ adult.addEventListener('change', loadData)
 children.addEventListener('change', loadData)
 
 function loadData () {
-  console.log(orderTime, adult, children)
   axios.get(`http://localhost:3000/api/order/${restaurantId}?orderTime=${orderTime.value}&adult=${adult.value}&children=${children.value}`)
     .then(function (response) {
       const { availableTime, bookingCounts, condition } = response.data
       let innerHtml = ''
-      console.log(response.data)
       availableTime.forEach(time => {
-        const b = bookingCounts.find(item => item.reserveinfoId === time.id && item.arrangeTable === condition && String(orderTime.value) === item.date)
-        console.log(b)
+        const b = bookingCounts.find(item => item.reserveinfoId === time.id && item.arrangeTable === condition)
         if (!b) {
           innerHtml += `
           <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}">
@@ -62,10 +59,8 @@ function firstData () {
     .then(function (response) {
       const { availableTime, bookingCounts, condition } = response.data
       let innerHtml = ''
-      console.log(response.data)
       availableTime.forEach(time => {
         const b = bookingCounts.find(item => item.reserveinfoId === time.id && item.arrangeTable === condition)
-        console.log(b)
         if (!b) {
           innerHtml += `
           <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}">
