@@ -13,9 +13,11 @@ function getDate () {
   if (day < 10) { day = '0' + day }
   return year + '-' + month + '-' + day
 }
-const chooseOrderTime = document.getElementById('orderTime')
-chooseOrderTime.min = getDate()
-chooseOrderTime.value = getDate()
+
+// default date
+
+orderTime.min = getDate()
+orderTime.value = getDate()
 
 orderTime.addEventListener('change', loadData)
 adult.addEventListener('change', loadData)
@@ -37,7 +39,7 @@ function loadData () {
         }
         if (b && Number(time[condition]) - Number(b.count) <= 0) {
           innerHtml += `
-          <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}" disabled>
+          <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}"disabled>
           <label class="btn btn-outline-secondary" for="${time.openingTime}">${time.openingTime}</label>
         `
         } else {
@@ -88,3 +90,14 @@ function firstData () {
 }
 
 firstData()
+
+const pickList = document.querySelector('.reservation')
+const reservedButton = document.querySelector('.reserved-now')
+
+pickList.addEventListener('change', function checkValue (event) {
+  if (event.target.tagName === 'INPUT' && event.target.checked) {
+    reservedButton.disabled = false
+  } else {
+    reservedButton.disabled = true
+  }
+})
