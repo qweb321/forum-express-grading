@@ -25,14 +25,30 @@ function loadData () {
   console.log(orderTime, adult, children)
   axios.get(`http://localhost:3000/api/order/${restaurantId}?orderTime=${orderTime.value}&adult=${adult.value}&children=${children.value}`)
     .then(function (response) {
-      const data = response.data
+      const { availableTime, bookingCounts, condition } = response.data
       let innerHtml = ''
       console.log(response.data)
-      data.forEach(time => {
-        innerHtml += `
+      availableTime.forEach(time => {
+        const b = bookingCounts.find(item => item.reserveinfoId === time.id && item.arrangeTable === condition && String(orderTime.value) === item.date)
+        console.log(b)
+        if (!b) {
+          innerHtml += `
           <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}">
           <label class="btn btn-outline-secondary" for="${time.openingTime}">${time.openingTime}</label>
         `
+          return
+        }
+        if (b && Number(time[condition]) - Number(b.count) <= 0) {
+          innerHtml += `
+          <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}" disabled>
+          <label class="btn btn-outline-secondary" for="${time.openingTime}">${time.openingTime}</label>
+        `
+        } else {
+          innerHtml += `
+          <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}">
+          <label class="btn btn-outline-secondary" for="${time.openingTime}">${time.openingTime}</label>
+        `
+        }
       })
       selectTime.innerHTML = innerHtml
     })
@@ -44,14 +60,30 @@ function loadData () {
 function firstData () {
   axios.get(`http://localhost:3000/api/order/${restaurantId}?orderTime=${getDate()}&adult=1&children=0`)
     .then(function (response) {
-      const data = response.data
+      const { availableTime, bookingCounts, condition } = response.data
       let innerHtml = ''
       console.log(response.data)
-      data.forEach(time => {
-        innerHtml += `
+      availableTime.forEach(time => {
+        const b = bookingCounts.find(item => item.reserveinfoId === time.id && item.arrangeTable === condition)
+        console.log(b)
+        if (!b) {
+          innerHtml += `
           <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}">
           <label class="btn btn-outline-secondary" for="${time.openingTime}">${time.openingTime}</label>
         `
+          return
+        }
+        if (b && Number(time[condition]) - Number(b.count) <= 0) {
+          innerHtml += `
+          <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}" disabled>
+          <label class="btn btn-outline-secondary" for="${time.openingTime}">${time.openingTime}</label>
+        `
+        } else {
+          innerHtml += `
+          <input type="radio" class="btn-check select" name="reservedTime" id="${time.openingTime}" value="${time.openingTime}">
+          <label class="btn btn-outline-secondary" for="${time.openingTime}">${time.openingTime}</label>
+        `
+        }
       })
       selectTime.innerHTML = innerHtml
     })

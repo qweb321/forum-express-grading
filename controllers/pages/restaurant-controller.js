@@ -158,17 +158,29 @@ const restaurantController = {
       .then(([reservation, customer]) => {
         if (!customer) throw new Error('訂位失敗，請重新確認')
         if (!reservation) throw new Error('訂位時間未選擇，請回上一頁重新選擇')
+        let table = ''
+        if (Number(adult) + Number(children) <= 2) {
+          table = 'twoSeater'
+        } else if (Number(adult) + Number(children) > 2 && Number(adult) + Number(children) <= 4) {
+          table = 'fourSeater'
+        } else {
+          table = 'sixSeater'
+        }
+        console.log(table)
+
         return Booking.create({
           restaurantId: req.params.restaurantId,
           customerId: customer.id,
           date,
           numberOfAdult: adult,
           numberOfChildren: children,
-          reserveinfoId: reservation.id
+          reserveinfoId: reservation.id,
+          arrangeTable: table
         })
       })
       .then(info1 => {
         const info = info1.toJSON()
+
         return Booking.findOne({
           where: {
             customerId: info.customerId
@@ -207,7 +219,7 @@ const restaurantController = {
                               <p style="font-weight: bold; font-size: 2rem; color: #e58646; text-align: center;">${info.ReserveInfo.openingTime}</p>
                               <p style="text-align: center;">${info.numberOfAdult}大${info.numberOfChildren}小</p>
                           </div>
-                    </div> 
+                    </div>
                   </div>
           </div>`
         }
