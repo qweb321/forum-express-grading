@@ -104,7 +104,7 @@ const restaurantController = {
       .then(restaurants => {
         const result = restaurants.map(rest => ({
           ...rest.toJSON(),
-          description: rest.description.substring(0, 50),
+          description: rest.description.substring(0, 50) || '',
           favoritesCount: rest.FavoritedUsers.length,
           isFavorited: rest.FavoritedUsers.some(f => f.id === req.user.id)
         }))
@@ -112,6 +112,7 @@ const restaurantController = {
           .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
+      .catch(err => next(err))
   },
   getReservation: (req, res, next) => {
     Promise.all([
