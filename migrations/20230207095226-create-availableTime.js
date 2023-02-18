@@ -1,27 +1,21 @@
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('ReserveInfos', {
+    await queryInterface.createTable('AvailableTimes', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      restaurant_id: {
+      table_id: {
         type: Sequelize.INTEGER
       },
-      opening_time: {
+      time: {
         type: Sequelize.STRING
       },
-      two_seater: {
-        type: Sequelize.INTEGER
-      },
-      four_seater: {
-        type: Sequelize.INTEGER
-      },
-      six_seater: {
-        type: Sequelize.INTEGER
+      is_available: {
+        type: Sequelize.BOOLEAN
       },
       created_at: {
         allowNull: false,
@@ -34,6 +28,6 @@ module.exports = {
     })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('ReserveInfos')
+    await queryInterface.dropTable('AvailableTimes')
   }
 }
