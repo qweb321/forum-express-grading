@@ -44,6 +44,19 @@ const reserveInfoController = {
       })
       .catch(err => next(err))
   },
+  deleteAvailableTime: (req, res, next) => {
+    AvailableTime.findByPk(req.params.id)
+      .then(time => {
+        if (!time) throw new Error('Time is not exist!')
+
+        return time.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', 'Time already deleted!')
+        res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
   postTable: (req, res, next) => {
     console.log(req.params.id)
     console.log(req.body)
@@ -84,6 +97,19 @@ const reserveInfoController = {
       })
       .then(() => {
         req.flash('success_messages', 'Table already update!')
+        res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+  deleteTable: (req, res, next) => {
+    Table.findByPk(req.params.id)
+      .then(table => {
+        if (!table) throw new Error('Table is not exist!')
+
+        return table.destroy()
+      })
+      .then(() => {
+        req.flash('success_messages', 'Table already deleted!')
         res.redirect('back')
       })
       .catch(err => next(err))
