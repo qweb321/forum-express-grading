@@ -9,8 +9,6 @@
         <th scope="col">#</th>
         <th scope="col">Open Time</th>
         <th scope="col">Available</th> 
-        {{!-- <th scope="col">4 Seater</th>
-        <th scope="col">6 Seater</th> --}} --}}
         <th scope="col"></th>
         <th scope="col"></th>
       </tr>
@@ -19,7 +17,7 @@
       {{#each times}}
         <tr class="text-center">
             <th scope="row">{{this.id}}</th>
-            <td><input class="reservation-input form-control-plaintext" type="time" name="availableTime" value="{{this.time}}" form="edit-time-form-{{this.id}}" onfocusout="looseFocusTime()" style="text-align:center;" readonly></td>
+            <td style="width: 10rem;"><input class="reservation-input form-control-plaintext" type="time" name="availableTime" value="{{this.time}}" form="edit-time-form-{{this.id}}" onfocusout="looseFocusTime()" style="text-align:center;" readonly></td>
             <td><input  class="reservation-input form-control-plaintext mx-auto" type="checkbox" name="isAvailable" {{#ifCond this.isAvailable 1}} checked {{/ifCond}} form="edit-time-form-{{this.id}}" style="width: 2rem"></td>
             <td>
               <form action="/admin/reservations/{{this.id}}/time?_method=PUT" method="POST" id="edit-time-form-{{this.id}}" style="display: inline;">
@@ -57,7 +55,7 @@
       {{#each tables}}
         <tr class="text-center">
             <th scope="row">{{this.id}}</th>
-            <td><input class="reservation-table form-control-plaintext" type="text" name="tableName" value="{{this.name}}" form="edit-table-form-{{this.id}}" onfocusout="looseFocus()" style="text-align:center;" readonly></td>
+            <td style="width: 10rem;"><input class="reservation-table form-control-plaintext" type="text" name="tableName" value="{{this.name}}" form="edit-table-form-{{this.id}}" onfocusout="looseFocus()" style="text-align:center;" readonly></td>
             <td><input  class="reservation-table form-control-plaintext mx-auto" type="text" name="capacity" value="{{this.capacity}}" form="edit-table-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
             <td>
               <form action="/admin/reservations/{{this.id}}/table?_method=PUT" method="POST" id="edit-table-form-{{this.id}}" style="display: inline;">
