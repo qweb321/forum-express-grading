@@ -1,7 +1,8 @@
 'use strict'
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Tables', {
+    await queryInterface.createTable('Bookings', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,11 +13,26 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      name: {
-        type: Sequelize.STRING,
+      customer_id: {
+        type: Sequelize.INTEGER,
         allowNull: false
       },
-      capacity: {
+      table_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      time_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      date: {
+        type: Sequelize.DATEONLY
+      },
+      number_of_adult: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      number_of_children: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
@@ -30,7 +46,8 @@ module.exports = {
       }
     })
   },
+
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Tables')
+    await queryInterface.dropTable('Bookings')
   }
 }

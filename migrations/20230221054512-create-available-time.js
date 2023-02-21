@@ -9,10 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       restaurant_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       time: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       is_available: {
         type: Sequelize.BOOLEAN
