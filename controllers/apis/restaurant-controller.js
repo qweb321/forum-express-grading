@@ -1,4 +1,4 @@
-const { ReserveInfo, Booking } = require('../../models')
+const { AvailableTime, Table } = require('../../models')
 const restaurantServices = require('../../services/restaurant-services')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -7,30 +7,30 @@ const restaurantController = {
   getReservation: async (req, res, next) => {
     try {
       const { orderTime, adult, children } = req.query
-      let condition = ''
+      let capacity = 0
       if (Number(adult) + Number(children) <= 2) {
-        condition = 'twoSeater'
+        capacity = 2
       } else if (Number(adult) + Number(children) > 2 && Number(adult) + Number(children) <= 4) {
-        condition = 'fourSeater'
+        capacity = 4
       } else {
-        condition = 'sixSeater'
+        capacity = 6
       }
-      const bookingCounts = await Booking.count({
+      const tableCounts = await Table.count({
         where: {
           restaurantId: req.params.id,
-          date: orderTime // 時區錯誤，config中多加八小時排除
+          capacity: capacity
         },
         raw: true,
-        group: ['restaurantId', 'reserveinfoId', 'arrangeTable', 'date']
+        group: ['restaurantId', 'capacity']
       })
-      const availableTime = await ReserveInfo.findAll({
+      const availableTime = await AvailableTime.findAll({
         where: {
           restaurantId: req.params.id
         },
-        attributes: ['id', 'openingTime', condition],
+        attributes: ['id', 'time'],
         raw: true
       })
-      res.json({ availableTime, bookingCounts, condition })
+      res.json({ availableTime, tableCounts})
     } catch (err) {
       return next(err)
     }
