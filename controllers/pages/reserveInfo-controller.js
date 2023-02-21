@@ -1,4 +1,4 @@
-const { ReserveInfo } = require('../../models')
+const { ReserveInfo, Table } = require('../../models')
 
 const reserveInfoController = {
   editReservation: (req, res, next) => {
@@ -41,8 +41,52 @@ const reserveInfoController = {
         })
       })
       .then(() => {
-        req.flash('success_messages', 'Opening Time was successfully created')
+        req.flash('success_messages', 'Opening Time created successfully')
         res.redirect(`/admin/restaurants/${restaurantId}`)
+      })
+      .catch(err => next(err))
+  },
+  postTable: (req, res, next) => {
+    console.log(req.params.id)
+    console.log(req.body)
+    const restaurantId = req.params.id
+    const { tableName, capacity } = req.body
+    if (!tableName || !capacity) throw new Error('Name and capacity is required')
+    return Table.findAll({
+      where: {
+        name: tableName
+      },
+      raw: true
+    })
+      .then(table => {
+        if (table.length) throw new Error('This table name already setup!')
+
+        return Table.create({
+          restaurantId,
+          name: tableName,
+          capacity
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'New Table created successfully')
+        res.redirect(`/admin/restaurants/${restaurantId}`)
+      })
+      .catch(err => next(err))
+  },
+  editTable: (req, res, next) => {
+    const { tableName, capacity } = req.body
+    Table.findByPk(req.params.id)
+      .then(table => {
+        if (!table) throw new Error('This table is not exist!')
+
+        return table.update({
+          name: tableName,
+          capacity
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'Table already update!')
+        res.redirect('back')
       })
       .catch(err => next(err))
   }

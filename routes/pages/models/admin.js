@@ -15,6 +15,8 @@ router.post('/categories', categoryController.postCategories)
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 
+router.post('/reservations/create/table/:id', reserveInfoController.postTable)
+router.post('/reservations/:id/table', reserveInfoController.editTable)
 router.post('/reservations/create/:id', reserveInfoController.postReservation)
 router.post('/reservations/:id', reserveInfoController.editReservation)
 
