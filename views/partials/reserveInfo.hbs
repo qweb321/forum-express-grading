@@ -16,13 +16,13 @@
       </tr>
     </thead>
     <tbody class="reservation-time">
-      {{#each reserveInfos}}
+      {{#each times}}
         <tr class="text-center">
             <th scope="row">{{this.id}}</th>
-            <td><input class="reservation-input form-control-plaintext" type="time" name="availableTime" value="{{this.availableTime}}" form="edit-time-form-{{this.id}}" onfocusout="looseFocus()" style="text-align:center;" readonly></td>
-            <td><input  class="reservation-input form-control-plaintext mx-auto" type="checkbox" name="isAvailable" value="{{this.isAvailable}}" form="edit-time-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td><input class="reservation-input form-control-plaintext" type="time" name="availableTime" value="{{this.time}}" form="edit-time-form-{{this.id}}" onfocusout="looseFocusTime()" style="text-align:center;" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext mx-auto" type="checkbox" name="isAvailable" {{#ifCond this.isAvailable 1}} checked {{/ifCond}} form="edit-time-form-{{this.id}}" style="width: 2rem"></td>
             <td>
-              <form action="/admin/reservations/{{this.id}}/availableTime" method="POST" id="edit-time-form-{{this.id}}" style="display: inline;">
+              <form action="/admin/reservations/{{this.id}}/time?_method=PUT" method="POST" id="edit-time-form-{{this.id}}" style="display: inline;">
                 <button type="submit" class="btn btn-link reservation-edit" form="edit-time-form-{{this.id}}">Edit</button>
               </form>
             </td>
@@ -60,7 +60,7 @@
             <td><input class="reservation-table form-control-plaintext" type="text" name="tableName" value="{{this.name}}" form="edit-table-form-{{this.id}}" onfocusout="looseFocus()" style="text-align:center;" readonly></td>
             <td><input  class="reservation-table form-control-plaintext mx-auto" type="text" name="capacity" value="{{this.capacity}}" form="edit-table-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
             <td>
-              <form action="/admin/reservations/{{this.id}}/table" method="POST" id="edit-table-form-{{this.id}}" style="display: inline;">
+              <form action="/admin/reservations/{{this.id}}/table?_method=PUT" method="POST" id="edit-table-form-{{this.id}}" style="display: inline;">
                 <button type="submit" class="btn btn-link reservation-edit" form="edit-table-form-{{this.id}}">Edit</button>
               </form>
             </td>
@@ -80,11 +80,15 @@
 <script>
   const editTimes = document.querySelectorAll(".reservation-input")
   editTimes.forEach((input) =>
-    input.addEventListener("dblclick", function onInputClick(event) {
-      input.removeAttribute('readonly')
+    input.addEventListener("dblclick", function onInputClick() {
+      console.log(this)
+      if (this.type === 'time'){
+        input.removeAttribute('readonly')
+      }
     })
   )
-function looseFocus() {
+
+function looseFocusTime() {
    document.querySelectorAll(".reservation-input").forEach((input) => {
     if (input.readOnly === false) {
       input.readOnly = true
@@ -116,7 +120,7 @@ function addTime() {
 
 const editTables = document.querySelectorAll(".reservation-table")
   editTables.forEach((input) =>
-    input.addEventListener("dblclick", function onInputClick(event) {
+    input.addEventListener("dblclick", function onInputClick() {
       input.removeAttribute('readonly')
     })
   )

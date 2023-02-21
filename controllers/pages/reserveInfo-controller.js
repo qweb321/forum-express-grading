@@ -1,47 +1,45 @@
-const { ReserveInfo, Table } = require('../../models')
+const { ReserveInfo, Table, AvailableTime } = require('../../models')
 
 const reserveInfoController = {
-  editReservation: (req, res, next) => {
-    const { openingTime, twoSeater, fourSeater, sixSeater } = req.body
-    ReserveInfo.findByPk(req.params.id)
-      .then(info => {
-        if (!info) throw new Error("This information didn't exist!")
-        info.update({
-          openingTime,
-          twoSeater,
-          fourSeater,
-          sixSeater
-        })
-      })
-      .then(() => res.redirect('back'))
-      .catch(err => next(err))
-  },
-  postReservation: (req, res, next) => {
-    console.log(req.params.id)
-    console.log(req.body)
-    const restaurantId = req.params.id
-    const { openingTime, twoSeater, fourSeater, sixSeater } = req.body
-    if (!openingTime) throw new Error('Time is required')
-    ReserveInfo.findAll({
-      where: {
-        restaurantId,
-        openingTime
-      },
-      raw: true
-    })
-      .then(info => {
-        if (info.length) throw new Error('This time already setup!')
-
-        return ReserveInfo.create({
-          restaurantId,
-          openingTime,
-          twoSeater,
-          fourSeater,
-          sixSeater
+  putAvailableTime: (req, res, next) => {
+    const { availableTime, isAvailable } = req.body
+    AvailableTime.findByPk(req.params.id)
+      .then(time => {
+        if (!time) throw new Error("This available time didn't exist!")
+        return time.update({
+          time: availableTime,
+          isAvailable: isAvailable === 'on'
         })
       })
       .then(() => {
-        req.flash('success_messages', 'Opening Time created successfully')
+        req.flash('success_messages', 'Time already update!')
+        res.redirect('back')
+      })
+      .catch(err => next(err))
+  },
+  postAvailableTime: (req, res, next) => {
+    console.log(req.params.id)
+    console.log(req.body)
+    const restaurantId = req.params.id
+    const { availableTime, isAvailable } = req.body
+    if (!availableTime) throw new Error('Available time is required')
+    AvailableTime.findAll({
+      where: {
+        time: availableTime
+      },
+      raw: true
+    })
+      .then(time => {
+        if (time.length) throw new Error('This time already setup!')
+
+        return AvailableTime.create({
+          restaurantId,
+          time: availableTime,
+          isAvailable: isAvailable === 'on'
+        })
+      })
+      .then(() => {
+        req.flash('success_messages', 'New time created successfully')
         res.redirect(`/admin/restaurants/${restaurantId}`)
       })
       .catch(err => next(err))
@@ -73,7 +71,7 @@ const reserveInfoController = {
       })
       .catch(err => next(err))
   },
-  editTable: (req, res, next) => {
+  putTable: (req, res, next) => {
     const { tableName, capacity } = req.body
     Table.findByPk(req.params.id)
       .then(table => {

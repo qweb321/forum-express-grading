@@ -16,9 +16,9 @@ router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
 
 router.post('/reservations/create/table/:id', reserveInfoController.postTable)
-router.post('/reservations/:id/table', reserveInfoController.editTable)
-router.post('/reservations/create/:id', reserveInfoController.postReservation)
-router.post('/reservations/:id', reserveInfoController.editReservation)
+router.post('/reservations/create/time/:id', reserveInfoController.postAvailableTime)
+router.put('/reservations/:id/table', reserveInfoController.putTable)
+router.put('/reservations/:id/time', reserveInfoController.putAvailableTime)
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)
