@@ -1,4 +1,4 @@
-const { AvailableTime, Table } = require('../../models')
+const { AvailableTime, Table, Booking } = require('../../models')
 const restaurantServices = require('../../services/restaurant-services')
 const restaurantController = {
   getRestaurants: (req, res, next) => {
@@ -15,14 +15,7 @@ const restaurantController = {
       } else {
         capacity = 6
       }
-      const tableCounts = await Table.count({
-        where: {
-          restaurantId: req.params.id,
-          capacity: capacity
-        },
-        raw: true,
-        group: ['restaurantId', 'capacity']
-      })
+
       const availableTime = await AvailableTime.findAll({
         where: {
           restaurantId: req.params.id
@@ -30,7 +23,31 @@ const restaurantController = {
         attributes: ['id', 'time'],
         raw: true
       })
-      res.json({ availableTime, tableCounts})
+      const data = await Promise.all(availableTime.map(async time => {
+        const count = await Table.findAll({
+          where: {
+            restaurantId: req.params.id,
+            capacity
+          },
+          raw: true,
+          include: [{
+            model: Booking,
+            as: Booking,
+            attributes: ['table_id'],
+            where: {
+              date: orderTime,
+              time_id: time.id
+            },
+            required: false
+          }],
+          having: {
+            '$Bookings.table_id$': null
+          }
+        })
+        return { time: time.time, count: Number(count.length) }
+      }))
+
+      res.json({ availableTime, data })
     } catch (err) {
       return next(err)
     }

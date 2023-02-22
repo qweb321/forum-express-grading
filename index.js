@@ -9,8 +9,12 @@ function getDate () {
   const year = date.getFullYear()
   let month = date.getMonth() + 1
   let day = date.getDate()
-  if (month < 10) { month = '0' + month }
-  if (day < 10) { day = '0' + day }
+  if (month < 10) {
+    month = '0' + month
+  }
+  if (day < 10) {
+    day = '0' + day
+  }
   return year + '-' + month + '-' + day
 }
 
@@ -24,12 +28,20 @@ adult.addEventListener('change', loadData)
 children.addEventListener('change', loadData)
 
 function loadData () {
-  axios.get(`http://localhost:3000/api/order/${restaurantId}?orderTime=${orderTime.value}&adult=${adult.value}&children=${children.value}`)
+  axios
+    .get(
+      `http://localhost:3000/api/order/${restaurantId}?orderTime=${orderTime.value}&adult=${adult.value}&children=${children.value}`
+    )
     .then(function (response) {
-      console.log(response.data)
-      const { availableTime, tableCounts } = response.data
+      const { data } = response.data
       let innerHtml = ''
-      availableTime.forEach(time => {
+      data.forEach(time => {
+        if (time.count === 0) {
+          return (innerHtml += `
+            <input type="radio" class="btn-check select" name="reservedTime" id="${time.time}" value="${time.time}" disabled>
+            <label class="btn btn-outline-secondary" for="${time.time}">${time.time}</label>
+            `)
+        }
         innerHtml += `
           <input type="radio" class="btn-check select" name="reservedTime" id="${time.time}" value="${time.time}">
           <label class="btn btn-outline-secondary" for="${time.time}">${time.time}</label>
@@ -43,12 +55,20 @@ function loadData () {
 }
 
 function firstData () {
-  axios.get(`http://localhost:3000/api/order/${restaurantId}?orderTime=${getDate()}&adult=1&children=0`)
+  axios
+    .get(
+      `http://localhost:3000/api/order/${restaurantId}?orderTime=${getDate()}&adult=1&children=0`
+    )
     .then(function (response) {
-      console.log(response.data)
-      const { availableTime, tableCounts } = response.data
+      const { data } = response.data
       let innerHtml = ''
-      availableTime.forEach(time => {
+      data.forEach(time => {
+        if (time.count === 0) {
+          return (innerHtml += `
+            <input type="radio" class="btn-check select" name="reservedTime" id="${time.time}" value="${time.time}" disabled>
+            <label class="btn btn-outline-secondary" for="${time.time}">${time.time}</label>
+            `)
+        }
         innerHtml += `
           <input type="radio" class="btn-check select" name="reservedTime" id="${time.time}" value="${time.time}">
           <label class="btn btn-outline-secondary" for="${time.time}">${time.time}</label>
