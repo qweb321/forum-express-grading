@@ -131,102 +131,6 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  postBookingFrom: (req, res, next) => {
-    const { name, gender, phone, email, adult, children, date, time, remark } = req.body
-    if (!name || !phone || !email) throw new Error('姓名、手機號碼及Email為必填欄位')
-
-    let capacity = 0
-    if (Number(adult) + Number(children) <= 2) {
-      capacity = 2
-    } else if (Number(adult) + Number(children) > 2 && Number(adult) + Number(children) <= 4) {
-      capacity = 4
-    } else {
-      capacity = 6
-    }
-    Promise.all([
-      AvailableTime.findOne({
-        where: {
-          restaurantId: req.params.restaurantId,
-          time
-        }
-      }),
-      Customer.create({
-        name,
-        gender,
-        phone,
-        email,
-        remark: remark || 'no require'
-      })
-    ])
-      .then(([time, customer, tables]) => {
-        if (!customer) throw new Error('訂位失敗，請重新確認')
-        if (!time) throw new Error('訂位時間未選擇，請回上一頁重新選擇')
-        console.log(tables)
-        // return Booking.create({
-        //   restaurantId: req.params.restaurantId,
-        //   customerId: customer.id,
-        //   tableId: tables[0].id,
-        //   timeId: time.id,
-        //   date,
-        //   numberOfAdult: adult,
-        //   numberOfChildren: children
-        // })
-      })
-      .then(info1 => {
-        const info = info1.toJSON()
-
-        return Booking.findOne({
-          where: {
-            customerId: info.customerId
-          },
-          raw: true,
-          nest: true,
-          include: [Restaurant, Customer, AvailableTime]
-        })
-      })
-      .then(info => {
-        console.log(info)
-        info.date = dayjs(info.date).format('YYYY/MM/DD')
-        const transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
-          port: 465,
-          secure: true, // true for 465, false for other ports
-          auth: {
-            user: process.env.MODEMAILER_USER,
-            pass: process.env.MODEMAILER_PASS
-          }
-        })
-
-        // const mailOptions = {
-        //   from: process.env.MODEMAILER_USER,
-        //   to: `${info.Customer.email}`,
-        //   subject: '訂位成功通知',
-        //   text: 'That was easy!',
-        //   html: `<div style="background-color:#ffffff;">
-        //           <div style="margin:0px auto;max-width:2560px;">
-        //             <div style="margin: auto;">
-        //               <img src="${info.Restaurant.image}" alt=""  style="display: block;width: 200px; margin-left: auto; margin-right: auto;">
-        //               <p style="text-align: center;">${info.Customer.name}小姐/先生您好</p>
-        //               <p style="text-align: center;">已為您安排訂位</p>
-        //                   <div style="border: 1px solid gray; width: 30vw; margin: auto;">
-        //                       <p style="font-weight: bold; text-align: center;">${info.date}</p>
-        //                       <p style="font-weight: bold; font-size: 2rem; color: #e58646; text-align: center;">${info.ReserveInfo.openingTime}</p>
-        //                       <p style="text-align: center;">${info.numberOfAdult}大${info.numberOfChildren}小</p>
-        //                   </div>
-        //             </div>
-        //           </div>
-        //   </div>`
-        // }
-
-        // transporter.sendMail(mailOptions, function (error, infos) {
-        //   if (error) {
-        //     console.log(error)
-        //   }
-        // })
-        res.render('reservation-complete', { info })
-      })
-      .catch(err => next(err))
-  },
   postBooking: async (req, res, next) => {
     try {
       const { name, gender, phone, email, adult, children, date, time, remark } = req.body
@@ -290,6 +194,42 @@ const restaurantController = {
           raw: true
         })
 
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: process.env.MODEMAILER_USER,
+          pass: process.env.MODEMAILER_PASS
+        }
+      })
+
+      const mailOptions = {
+        from: process.env.MODEMAILER_USER,
+        to: `${email}`,
+        subject: '訂位成功通知',
+        text: 'That was easy!',
+        html: `<div style="background-color:#ffffff;">
+                  <div style="margin:0px auto;max-width:2560px;">
+                    <div style="margin: auto;">
+                      <img src="${restaurant.image}" alt=""  style="display: block;width: 200px; margin-left: auto; margin-right: auto;">
+                      <p style="text-align: center;">${name} ${gender}您好</p>
+                      <p style="text-align: center;">已為您安排訂位</p>
+                          <div style="border: 1px solid gray; width: 30vw; margin: auto;">
+                              <p style="font-weight: bold; text-align: center;">${date}</p>
+                              <p style="font-weight: bold; font-size: 2rem; color: #e58646; text-align: center;">${time}</p>
+                              <p style="text-align: center;">${adult}大${children}小</p>
+                          </div>
+                    </div>
+                  </div>
+          </div>`
+      }
+
+      transporter.sendMail(mailOptions, function (error, infos, next) {
+        if (error) {
+          next(error)
+        }
+      })
       res.render('reservation-complete', { restaurant, name, gender, date, time, adult, children })
     } catch (err) {
       next(err)
