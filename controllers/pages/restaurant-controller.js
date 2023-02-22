@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User, AvailableTime, Customer, Booking } = require('../../models')
+const { Restaurant, Category, Comment, User, AvailableTime, Customer, Booking, Table } = require('../../models')
 const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 const Sequelize = require('sequelize')
 const dayjs = require('dayjs')
@@ -131,14 +131,23 @@ const restaurantController = {
       })
       .catch(err => next(err))
   },
-  postBookingForm: (req, res, next) => {
+  postBookingFrom: (req, res, next) => {
     const { name, gender, phone, email, adult, children, date, time, remark } = req.body
     if (!name || !phone || !email) throw new Error('姓名、手機號碼及Email為必填欄位')
+
+    let capacity = 0
+    if (Number(adult) + Number(children) <= 2) {
+      capacity = 2
+    } else if (Number(adult) + Number(children) > 2 && Number(adult) + Number(children) <= 4) {
+      capacity = 4
+    } else {
+      capacity = 6
+    }
     Promise.all([
-      ReserveInfo.findOne({
+      AvailableTime.findOne({
         where: {
           restaurantId: req.params.restaurantId,
-          openingTime: time
+          time
         }
       }),
       Customer.create({
@@ -149,27 +158,19 @@ const restaurantController = {
         remark: remark || 'no require'
       })
     ])
-      .then(([reservation, customer]) => {
+      .then(([time, customer, tables]) => {
         if (!customer) throw new Error('訂位失敗，請重新確認')
-        if (!reservation) throw new Error('訂位時間未選擇，請回上一頁重新選擇')
-        let table = ''
-        if (Number(adult) + Number(children) <= 2) {
-          table = 'twoSeater'
-        } else if (Number(adult) + Number(children) > 2 && Number(adult) + Number(children) <= 4) {
-          table = 'fourSeater'
-        } else {
-          table = 'sixSeater'
-        }
-
-        return Booking.create({
-          restaurantId: req.params.restaurantId,
-          customerId: customer.id,
-          date,
-          numberOfAdult: adult,
-          numberOfChildren: children,
-          reserveinfoId: reservation.id,
-          arrangeTable: table
-        })
+        if (!time) throw new Error('訂位時間未選擇，請回上一頁重新選擇')
+        console.log(tables)
+        // return Booking.create({
+        //   restaurantId: req.params.restaurantId,
+        //   customerId: customer.id,
+        //   tableId: tables[0].id,
+        //   timeId: time.id,
+        //   date,
+        //   numberOfAdult: adult,
+        //   numberOfChildren: children
+        // })
       })
       .then(info1 => {
         const info = info1.toJSON()
@@ -180,10 +181,11 @@ const restaurantController = {
           },
           raw: true,
           nest: true,
-          include: [Restaurant, Customer, ReserveInfo]
+          include: [Restaurant, Customer, AvailableTime]
         })
       })
       .then(info => {
+        console.log(info)
         info.date = dayjs(info.date).format('YYYY/MM/DD')
         const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
@@ -195,35 +197,103 @@ const restaurantController = {
           }
         })
 
-        const mailOptions = {
-          from: process.env.MODEMAILER_USER,
-          to: `${info.Customer.email}`,
-          subject: '訂位成功通知',
-          text: 'That was easy!',
-          html: `<div style="background-color:#ffffff;">
-                  <div style="margin:0px auto;max-width:2560px;">
-                    <div style="margin: auto;">
-                      <img src="${info.Restaurant.image}" alt=""  style="display: block;width: 200px; margin-left: auto; margin-right: auto;">
-                      <p style="text-align: center;">${info.Customer.name}小姐/先生您好</p>
-                      <p style="text-align: center;">已為您安排訂位</p>
-                          <div style="border: 1px solid gray; width: 30vw; margin: auto;">
-                              <p style="font-weight: bold; text-align: center;">${info.date}</p>
-                              <p style="font-weight: bold; font-size: 2rem; color: #e58646; text-align: center;">${info.ReserveInfo.openingTime}</p>
-                              <p style="text-align: center;">${info.numberOfAdult}大${info.numberOfChildren}小</p>
-                          </div>
-                    </div>
-                  </div>
-          </div>`
-        }
+        // const mailOptions = {
+        //   from: process.env.MODEMAILER_USER,
+        //   to: `${info.Customer.email}`,
+        //   subject: '訂位成功通知',
+        //   text: 'That was easy!',
+        //   html: `<div style="background-color:#ffffff;">
+        //           <div style="margin:0px auto;max-width:2560px;">
+        //             <div style="margin: auto;">
+        //               <img src="${info.Restaurant.image}" alt=""  style="display: block;width: 200px; margin-left: auto; margin-right: auto;">
+        //               <p style="text-align: center;">${info.Customer.name}小姐/先生您好</p>
+        //               <p style="text-align: center;">已為您安排訂位</p>
+        //                   <div style="border: 1px solid gray; width: 30vw; margin: auto;">
+        //                       <p style="font-weight: bold; text-align: center;">${info.date}</p>
+        //                       <p style="font-weight: bold; font-size: 2rem; color: #e58646; text-align: center;">${info.ReserveInfo.openingTime}</p>
+        //                       <p style="text-align: center;">${info.numberOfAdult}大${info.numberOfChildren}小</p>
+        //                   </div>
+        //             </div>
+        //           </div>
+        //   </div>`
+        // }
 
-        transporter.sendMail(mailOptions, function (error, infos) {
-          if (error) {
-            console.log(error)
-          }
-        })
+        // transporter.sendMail(mailOptions, function (error, infos) {
+        //   if (error) {
+        //     console.log(error)
+        //   }
+        // })
         res.render('reservation-complete', { info })
       })
       .catch(err => next(err))
+  },
+  postBooking: async (req, res, next) => {
+    try {
+      const { name, gender, phone, email, adult, children, date, time, remark } = req.body
+      if (!name || !phone || !email) throw new Error('姓名、手機號碼及Email為必填欄位')
+
+      let capacity = 0
+      if (Number(adult) + Number(children) <= 2) {
+        capacity = 2
+      } else if (Number(adult) + Number(children) > 2 && Number(adult) + Number(children) <= 4) {
+        capacity = 4
+      } else {
+        capacity = 6
+      }
+      const availablTime = await AvailableTime.findOne({
+        where: {
+          restaurantId: req.params.restaurantId,
+          time
+        }
+      })
+      const customer = await Customer.create({
+        name,
+        gender,
+        phone,
+        email,
+        remark: remark || 'no require'
+      })
+      console.log(availablTime.id)
+      const tables = await Table.findAll({
+        attributes: ['id', 'name', 'capacity'],
+        where: {
+          capacity
+        },
+        include: [{
+          model: Booking,
+          as: Booking,
+          attributes: ['table_id'],
+          where: {
+            date: date,
+            time_id: availablTime.id
+          },
+          required: false
+        }],
+        having: {
+          '$Bookings.table_id$': null
+        }
+      })
+      console.log(tables)
+      if (!tables.length) throw new Error('此時段訂位已滿，請重新選擇')
+      const bookingCreate = await Booking.create({
+        restaurantId: req.params.restaurantId,
+        customerId: customer.id,
+        tableId: tables[0].id,
+        timeId: availablTime.id,
+        date,
+        numberOfAdult: adult,
+        numberOfChildren: children
+      })
+
+      const restaurant = await Restaurant.findByPk(req.params.restaurantId,
+        {
+          raw: true
+        })
+
+      res.render('reservation-complete', { restaurant, name, gender, date, time, adult, children })
+    } catch (err) {
+      next(err)
+    }
   }
 }
 module.exports = restaurantController

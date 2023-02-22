@@ -36,7 +36,7 @@ router.delete('/following/:userId', authenticated, userController.removeFollowin
 router.delete('/comments/:id', authenticated, commentController.deleteComment)
 router.post('/comments', authenticated, commentController.postComment)
 
-router.post('/booking/:restaurantId/form', authenticated, restController.postBookingForm)
+router.post('/booking/:restaurantId/form', authenticated, restController.postBooking)
 router.get('/booking/:restaurantId', authenticated, restController.getReservation)
 router.post('/booking/:restaurantId', authenticated, restController.postReservation)
 
