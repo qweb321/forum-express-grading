@@ -157,11 +157,11 @@ const restaurantController = {
         email,
         remark: remark || 'no require'
       })
-      console.log(availablTime.id)
       const tables = await Table.findAll({
         attributes: ['id', 'name', 'capacity'],
         where: {
-          capacity
+          capacity,
+          restaurantId: req.params.restaurantId
         },
         include: [{
           model: Booking,
@@ -177,7 +177,6 @@ const restaurantController = {
           '$Bookings.table_id$': null
         }
       })
-      console.log(tables)
       if (!tables.length) throw new Error('此時段訂位已滿，請重新選擇')
       const bookingCreate = await Booking.create({
         restaurantId: req.params.restaurantId,
