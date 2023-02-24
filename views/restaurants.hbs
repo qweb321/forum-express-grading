@@ -27,7 +27,7 @@
               {{this.name}}
             </a>
           </p>
-          <span class="badge bg-secondary">{{this.Category.name}}</span>
+          <span class="badge bg-secondary">{{#ifCond this.Category.name null}}未分類{{else}}{{this.Category.name}}{{/ifCond}}</span>
           <p class="card-text text-truncate">{{this.description}}</p>
           <div class="d-flex">
             <div class="d-flex">

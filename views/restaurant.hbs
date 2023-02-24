@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
+    <p>{{#ifCond restaurant.Category.name null}}[未分類]{{else}}[{{restaurant.Category.name}}]{{/ifCond}}</p>
   </div>
   <div class="col-md-4">
      <img class="img-responsive center-block" src="{{restaurant.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
