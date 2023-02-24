@@ -1,6 +1,7 @@
 const { Restaurant, Category, Comment, User, AvailableTime, Customer, Booking, Table } = require('../../models')
 const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 const Sequelize = require('sequelize')
+const { Op } = require('sequelize')
 const dayjs = require('dayjs')
 const nodemailer = require('nodemailer')
 
@@ -233,6 +234,76 @@ const restaurantController = {
     } catch (err) {
       next(err)
     }
+  },
+  searchRestaurants: (req, res, next) => {
+    console.log(req.query)
+    const { date, time, people } = req.query
+    const restaurant = req.query.restaurant.trim()
+
+    let capacity = 0
+    if (Number(people) <= 2) {
+      capacity = 2
+    } else if (Number(people) > 2 && Number(people) <= 4) {
+      capacity = 4
+    } else {
+      capacity = 6
+    }
+
+    return Restaurant.findAll({
+      raw: true,
+      nest: true,
+      where: {
+        ...restaurant ? { name: { [Op.like]: `%${restaurant}%` } } : {}
+      },
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('Restaurant.id')), 'id'],
+        'name',
+        'tel',
+        'address',
+        'opening_hours',
+        'description',
+        'image'
+      ],
+      include: [{
+        model: Table,
+        attributes: [],
+        where: {
+          capacity
+        },
+        include: [{
+          model: Booking,
+          required: false,
+          attributes: ['date', 'table_id', 'time_id'],
+          where: {
+            date
+          },
+          include: [{
+            model: AvailableTime,
+            attributes: [],
+            where: {
+              time
+            }
+          }]
+        }]
+      }],
+      having: {
+        '$Tables.Bookings.table_id$': null
+      }
+    })
+      .then(restaurants => {
+        if (!restaurants.length) {
+          return res.render('search-not-found', { date, time, people, restaurant })
+        }
+        const favoritedRestaurantsId = req.user && req.user.FavoritedRestaurants.map(fr => fr.id)
+        const likedRestaurantsId = req.user && req.user.LikedRestaurants.map(lr => lr.id)
+        const data = restaurants.map(rest => ({
+          ...rest,
+          description: rest.description.substring(0, 50),
+          isFavorited: favoritedRestaurantsId.includes(rest.id),
+          isLiked: likedRestaurantsId.includes(rest.id)
+        }))
+        res.render('search-page', { restaurants: data, date, time, people, restaurant })
+      })
   }
 }
 module.exports = restaurantController

@@ -23,6 +23,7 @@ router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/search', authenticated, restController.searchRestaurants)
 
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
