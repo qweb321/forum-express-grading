@@ -240,6 +240,11 @@ const restaurantController = {
     const { date, time, people } = req.query
     const restaurant = req.query.restaurant.trim()
 
+    const DEFAULT_LIMIT = 9
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || DEFAULT_LIMIT
+    const offset = getOffset(limit, page)
+
     let capacity = 0
     if (Number(people) <= 2) {
       capacity = 2
@@ -252,6 +257,9 @@ const restaurantController = {
     return Restaurant.findAll({
       raw: true,
       nest: true,
+      subQuery: false,
+      limit,
+      offset,
       where: {
         ...restaurant ? { name: { [Op.like]: `%${restaurant}%` } } : {}
       },
@@ -302,7 +310,7 @@ const restaurantController = {
           isFavorited: favoritedRestaurantsId.includes(rest.id),
           isLiked: likedRestaurantsId.includes(rest.id)
         }))
-        res.render('search-page', { restaurants: data, date, time, people, restaurant })
+        res.render('search-page', { restaurants: data, date, time, people, restaurant, pagination: getPagination(limit, page, restaurants.count) })
       })
   }
 }
