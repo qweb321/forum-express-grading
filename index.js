@@ -54,34 +54,7 @@ function loadData () {
     })
 }
 
-function firstData () {
-  axios
-    .get(
-      `http://localhost:3000/api/order/${restaurantId}?orderTime=${getDate()}&adult=1&children=0`
-    )
-    .then(function (response) {
-      const { data } = response.data
-      let innerHtml = ''
-      data.forEach(time => {
-        if (time.count === 0) {
-          return (innerHtml += `
-            <input type="radio" class="btn-check select" name="reservedTime" id="${time.time}" value="${time.time}" disabled>
-            <label class="btn btn-outline-secondary" for="${time.time}">${time.time}</label>
-            `)
-        }
-        innerHtml += `
-          <input type="radio" class="btn-check select" name="reservedTime" id="${time.time}" value="${time.time}">
-          <label class="btn btn-outline-secondary" for="${time.time}">${time.time}</label>
-        `
-      })
-      selectTime.innerHTML = innerHtml
-    })
-    .catch(function (err) {
-      console.log(err)
-    })
-}
-
-firstData()
+loadData()
 
 const pickList = document.querySelector('.reservation')
 const reservedButton = document.querySelector('.reserved-now')
