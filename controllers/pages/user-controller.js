@@ -1,6 +1,7 @@
 const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 const userServices = require('../../services/user-services')
+const { getUser } = require('../../helpers/auth-helpers')
 
 const userController = {
   signUppage: (req, res) => {
@@ -44,9 +45,9 @@ const userController = {
       .catch(err => next(err))
   },
   editUser: (req, res, next) => {
-    // if (req.user.id !== Number(req.params.id)) return res.redirect(`/users/${req.user.id}`)
+    if (getUser(req).id !== Number(req.params.id)) return res.redirect(`/users/${req.user.id}`)
     // check if loginUser and requestUser is same
-
+    // need to use getUser() in R03 test
     return User.findByPk(req.params.id, {
       raw: true
     })
