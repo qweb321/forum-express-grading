@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../../models')
+const { Restaurant, Category, Comment, User, Favorite } = require('../../models')
 const { getOffset, getPagination } = require('../../helpers/pagination-helper')
 const Sequelize = require('sequelize')
 
@@ -58,15 +58,19 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
+    return Promise.all([Restaurant.findByPk(req.params.id, {
       attributes: {
         include: [[Sequelize.fn('COUNT', Sequelize.col('Comments.id')), 'commentsCount']]
       },
       nest: true,
       include: [Category, { model: Comment, attributes: [] }]
+    }),
+    Favorite.findAndCountAll({
+      where: { restaurant_id: req.params.id }
     })
-      .then(restaurant => {
-        return res.render('dashboard', { restaurant: restaurant.toJSON() })
+    ])
+      .then(([restaurant, favorite]) => {
+        return res.render('dashboard', { restaurant: restaurant.toJSON(), favorite: favorite.count })
       })
       .catch(err => next(err))
   },
@@ -103,13 +107,14 @@ const restaurantController = {
         const result = restaurants.map(rest => ({
           ...rest.toJSON(),
           description: rest.description.substring(0, 50),
-          favoritesCount: rest.FavoritedUsers.length,
-          isFavorited: rest.FavoritedUsers.some(f => f.id === req.user.id)
+          favoritedCount: rest.FavoritedUsers.length,
+          isFavorited: req.user?.FavoritedRestaurants.some(f => f.id === rest.id) || []
         }))
-          .sort((a, b) => b.favoritesCount - a.favoritesCount)
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
           .slice(0, 10)
         res.render('top-restaurants', { restaurants: result })
       })
+      .catch(err => next(err))
   }
 }
 module.exports = restaurantController
