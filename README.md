@@ -2,7 +2,7 @@
 
 Restaurant reservation forum bulit with Node.js and MySQL for searching restauransts, leaving comments and making reservation with an account.
 
-The platform is deployed now on Heroku. click [link](https://stark-hamlet-62372.herokuapp.com/signin) to login with test accounts below.
+The platform is deployed now on Heroku. click [link](https://stark-hamlet-62372.herokuapp.com/signin) to singup account to login.
 
 
 
