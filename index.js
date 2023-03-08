@@ -30,7 +30,7 @@ children.addEventListener('change', loadData)
 function loadData () {
   axios
     .get(
-      `http://localhost:3000/api/order/${restaurantId}?orderTime=${orderTime.value}&adult=${adult.value}&children=${children.value}`
+      `https://stark-hamlet-62372.herokuapp.com/api/order/${restaurantId}?orderTime=${orderTime.value}&adult=${adult.value}&children=${children.value}`
     )
     .then(function (response) {
       const { data } = response.data
