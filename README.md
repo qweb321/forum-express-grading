@@ -1,6 +1,10 @@
 # Restaurant reservation forum
 
-Restaurant reservation forum bulit with Node.js and MySQL for searching restauransts, leaving comments and making reservation with an account 
+Restaurant reservation forum bulit with Node.js and MySQL for searching restauransts, leaving comments and making reservation with an account.
+
+The platform is deployed now on Heroku. click [link](https://stark-hamlet-62372.herokuapp.com/signin) to login with test accounts below.
+
+
 
 ## Table of contents
 
@@ -27,21 +31,21 @@ Restaurant reservation forum bulit with Node.js and MySQL for searching restaura
 
 ## Installation
 
-1. Open your terminal and use 'git clone' to copy this project to local.
+1. Open your terminal and use `git clone` to download this project to local
 
 ```
 git clone https://github.com/qweb321/forum-express-grading/tree/feature
 ```
-2. Install all dependencies.
+2. Install all dependencies
 ```
  npm install
  ```
-3. Run all migrations and seeders.
+3. Run all migrations and seeders
 ```
 npx sequelize db:migrate
 npx sequelize db:seed:all
 ```
-4. After installation finished, create an `.env` file to past all code from `.env.example` file
+4. After installation, create an `.env` file and past all code from `.env.example` file
 
 5. After creating database done, run
 
@@ -63,13 +67,13 @@ ctrl + C
 
 8. Test Account
 
+  Role | Account | Password
+  --- | --- | ---
+  Admin | root@example.com | 12345678
+  User | user1@example.com | 12345678
+  User | user2@example.com | 12345678
+
  
-* admin 
-  * email: root@example.com
-  * password: 12345678
-* user：
-  * email: user1@example.com
-  * password: 12345678
   ## Built with
 
 - Node.js
