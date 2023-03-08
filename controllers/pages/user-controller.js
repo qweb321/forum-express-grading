@@ -2,6 +2,7 @@ const { User, Comment, Restaurant, Favorite, Like, Followship } = require('../..
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 const userServices = require('../../services/user-services')
 const { getUser } = require('../../helpers/auth-helpers')
+const Sequelize = require('sequelize')
 
 const userController = {
   signUppage: (req, res) => {
@@ -33,16 +34,27 @@ const userController = {
     return Promise.all([
       User.findByPk(req.params.id, {
         include: [{ model: Restaurant, as: 'FavoritedRestaurants' },
-          { model: User, as: 'Followers' }, { model: User, as: 'Followings' }]
+          { model: User, as: 'Followers' }, { model: User, as: 'Followings' },
+          { model: Restaurant, as: 'LikedRestaurants' }
+        ]
       }),
-      Comment.findAndCountAll({ where: { userId: req.params.id }, include: Restaurant, raw: true, nest: true })
+      Comment.findAndCountAll({
+        where: { userId: req.params.id },
+        include: Restaurant,
+        raw: true,
+        nest: true,
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('restaurant_id')), 'restaurantId']]
+      })
 
     ])
       .then(([userProfile, comments]) => {
-        console.log(userProfile.toJSON().Following)
+        const currentUser = {
+          ...userProfile.toJSON(),
+          isFollowed: userProfile.Followers.some(f => f.id === loginUser.id)
+        }
         if (!userProfile) throw new Error("User didn't exist!")
 
-        return res.render('users/profile', { userProfile: userProfile.toJSON(), comments, loginUser })
+        return res.render('users/profile', { userProfile: currentUser, comments, loginUser })
       })
       .catch(err => next(err))
   },

@@ -86,7 +86,7 @@ const restaurantController = {
       Comment.findAll({
         limit: 10,
         order: [['createdAt', 'DESC']],
-        include: [User, Restaurant],
+        include: [User, { model: Restaurant, include: [Category] }],
         raw: true,
         nest: true
       })

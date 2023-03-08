@@ -1,61 +1,89 @@
-<div class="row mx-auto">
-    <div class="col-md-6 text-center">
-        <img class="img-responsive center-block" src="{{userProfile.image}}" alt="avatar" style="border-radius: 50%; width: 350px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-    </div>
-    <div class="col-md-6">
-        <h2>{{userProfile.name}}</h2>
-        <h3>{{userProfile.email}}</h3>
-        {{#ifCond userProfile.id loginUser.id}}
-        <a class="btn  btn-primary" href="/users/{{userProfile.id}}/edit">Edit</a>
-        {{/ifCond}}
-    </div>
-</div>
-<div class="row">
-    <div class="col">
-        <div class="card mt-3">
-            <div class="card-header">
-            {{#length userProfile.Followings}}{{/length}} following
-            </div>
-            <div class="card-body">
-                {{#each userProfile.Followings}}
-                    <img class="me-2" src="{{this.image}}" alt="image" style="width: 15%">
-                {{/each}}
-            </div>
-        </div>
-        <div class="card mt-3">
-            <div class="card-header">
-            {{#length userProfile.Followers}}{{/length}} follower
-            </div>
-            <div class="card-body">
-                {{#each userProfile.Followers}}
-                    <img class="me-2" src="{{this.image}}" alt="image" style="width: 15%">
-                {{/each}}
+<div class="col">
+    <div class="row card">
+        <div class="card-body col">
+            <div class="row">
+                <div class="col-5 text-start">
+                    <img class="img-responsive center-block" src="{{userProfile.image}}" alt="avatar" style="border-radius: 10%; width: 25vw; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+                </div>
+                <div class="col">
+                    <div class="text-start">
+                        <h2>{{userProfile.name}}</h2>
+                        <h3>{{userProfile.email}}</h3>
+                        {{#ifCond userProfile.id loginUser.id}}
+                        <a class="btn  btn-primary" href="/users/{{userProfile.id}}/edit">Edit</a>
+                        {{/ifCond}}
+                        {{#if userProfile.isFollowed }}
+                            <form action="/following/{{userProfile.id}}?_method=DELETE" method="POST" style="display: contents;">
+                                <button type="submit" class="btn btn-danger">取消追蹤</button>
+                            </form>
+                        {{else}}
+                            <form action="/following/{{userProfile.id}}" method="POST" style="display: contents;">
+                                <button type="submit" class="btn btn-primary">追蹤</button>
+                            </form>
+                        {{/if}}
+                    </div>
+                </div>
             </div>
         </div>
+        
     </div>
-    <div class="col">
-        <div class="card mt-3">
-            <div class="card-header">
-            {{comments.count}}則已評論餐廳
+    <div class="row">
+        <div class="col-4 px-0 pe-3">
+            <div class="card mt-3">
+                <div class="card-header">
+                {{#length userProfile.Followings}}{{/length}} following
+                </div>
+                <div class="card-body">
+                    {{#each userProfile.Followings}}
+                        <img class="me-2" src="{{this.image}}" alt="image" style="width: 15%">
+                    {{/each}}
+                </div>
             </div>
-            <div class="card-body">
-                {{#each comments.rows}}
-                    <img class="me-2" src="{{this.Restaurant.image}}" alt="image" style="width: 15%">
-                {{/each}}
+            <div class="card mt-3">
+                <div class="card-header">
+                {{#length userProfile.Followers}}{{/length}} follower
+                </div>
+                <div class="card-body">
+                    {{#each userProfile.Followers}}
+                        <img class="me-2" src="{{this.image}}" alt="image" style="width: 15%">
+                    {{/each}}
+                </div>
             </div>
         </div>
-         <div class="card mt-3">
-            <div class="card-header">
-            {{#length userProfile.FavoritedRestaurants}}{{/length}} 已收藏餐廳
+        <div class="col-8 px-0">
+            <div class="card mt-3">
+                <div class="card-header">
+                {{comments.count}}則已評論餐廳
+                </div>
+                <div class="card-body">
+                    {{#each comments.rows}}
+                        <img class="me-2" src="{{this.Restaurant.image}}" alt="image" style="width: 15%">
+                    {{/each}}
+                </div>
             </div>
-            <div class="card-body">
-                {{#each userProfile.FavoritedRestaurants}}
-                    <img class="me-2" src="{{this.image}}" alt="image" style="width: 15%">
-                {{/each}}
+            <div class="card mt-3">
+                <div class="card-header">
+                {{#length userProfile.FavoritedRestaurants}}{{/length}} 已收藏餐廳
+                </div>
+                <div class="card-body">
+                    {{#each userProfile.FavoritedRestaurants}}
+                        <img class="me-2" src="{{this.image}}" alt="image" style="width: 15%">
+                    {{/each}}
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-header">
+                {{#length userProfile.LikedRestaurants}}{{/length}} 已按讚餐廳
+                </div>
+                <div class="card-body">
+                    {{#each userProfile.LikedRestaurants}}
+                        <img class="me-2" src="{{this.image}}" alt="image" style="width: 15%">
+                    {{/each}}
+                </div>
             </div>
         </div>
+        
     </div>
-    
 </div>
 
 

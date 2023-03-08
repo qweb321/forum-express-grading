@@ -1,12 +1,15 @@
 <div class="row">
   <div class="col-md-12">
     <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
+    <p><span><i class="fa-solid fa-utensils"></i> {{restaurant.Category.name}}</span> 
+        <span><i class="fa-regular fa-comment"></i> {{#length restaurant.FavoritedUsers}}{{/length}}則評論</span> 
+        <span><i class="fa-regular fa-eye"></i> {{restaurant.viewCounts}}次瀏覽</span></p>
   </div>
   <div class="col-md-4">
      <img class="img-responsive center-block" src="{{restaurant.image}}" style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-    <br>
-    <div class="well">
+  </div>
+  <div class="col-md-8">
+    <div class="well ms-3">
       <ul class="list-unstyled">
         <li><strong>Opening Hour:</strong> {{restaurant.openingHours}}</li>
         <li><strong>Tel:</strong> {{restaurant.tel}}</li>
@@ -16,34 +19,35 @@
           <div class="d-flex">
             {{#if isFavorited }}
               <form action="/favorite/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;">
-                <button type="submit" class="btn btn-danger mt-2 me-2">移除最愛</button>
+                <button type="submit" class="btn btn-primary mt-2 me-2"><i class="fa-solid fa-bookmark"></i></button>
               </form>
             {{else}}
               <form action="/favorite/{{restaurant.id}}" method="POST" style="display: contents;">
-                <button type="submit" class="btn btn-primary mt-2 me-2">加到最愛</button>
+                <button type="submit" class="btn btn-outline-primary mt-2 me-2"><i class="fa-regular fa-bookmark"></i></button>
               </form>
             {{/if}}
             </div>
           <div class="d-flex">
             {{#if isLiked}}
               <form action="/like/{{restaurant.id}}?_method=DELETE" method="POST" style="display: contents;" class="d-flex align-items-center m-0">
-                <button type="submit" class="btn btn-danger mt-2" >Unlike</button>
+                <button type="submit" class="btn btn-warning mt-2"><i class="fa-solid fa-thumbs-up"></i></button>
               </form>
             {{else}}
               <form action="/like/{{restaurant.id}}" method="POST" class="d-flex align-items-center m-0" style="display: contents;">
-                <button type="submit" class="btn btn-primary mt-2">Like</button>
+                <button type="submit" class="btn btn-outline-warning mt-2"><i class="fa-regular fa-thumbs-up"></i></button>
               </form>
             {{/if}}
           </div>
         </div>
       </ul>
     </div>
-  </div>
-  <div class="col-md-8">
-    <p style="white-space: break-spaces;">{{restaurant.description}}</p>
+    
   </div>
   <hr>
 </div>
+<h3 class="mb-3">餐廳描述：</h3>
+<p style="white-space: break-spaces;">{{restaurant.description}}</p>
+<hr>
 {{!-- Comment --}}
 <h3 class="mb-3">所有評論：</h3>
 {{#each restaurant.Comments}}
