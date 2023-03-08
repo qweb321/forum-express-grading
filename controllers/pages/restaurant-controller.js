@@ -216,6 +216,7 @@ const restaurantController = {
                       <p style="text-align: center;">${name} ${gender}您好</p>
                       <p style="text-align: center;">已為您安排訂位</p>
                           <div style="border: 1px solid gray; width: 30vw; margin: auto;">
+                              <h3 style="text-align: center;">${restaurant.name}</h3>
                               <p style="font-weight: bold; text-align: center;">${date}</p>
                               <p style="font-weight: bold; font-size: 2rem; color: #e58646; text-align: center;">${time}</p>
                               <p style="text-align: center;">${adult}大${children}小</p>

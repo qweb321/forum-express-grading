@@ -1,17 +1,22 @@
 <div class="mx-auto" style="width: 80%;">
-    <div class="information" >
-        <img src="{{restaurant.image}}" class="d-flex mx-auto" alt="" style="width:100%;">
-        <h1 class="info">{{restaurant.name}}</h1>
-        <p class="d-none" id="restaurantId">{{restaurant.id}}</p>
-        <div class="info d-flex flex-row mb-3 mx-auto">
-            <div class="info" style="width:50%;">
-                <p class="info"><i class="fa-solid fa-location-dot"></i>  {{restaurant.address}}</p>
-                <p class="info"><i class="fa-solid fa-phone"></i> {{restaurant.tel}}</p>
-            </div>
-            <div class="info text-center" style="width:50%;">
-                <iframe src="{{mapSrc}}" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
+    <div class="information row">
+        <div class="mb-3">
+            <img src="{{restaurant.image}}" class="d-flex" alt="" width="100%">
         </div>
+        <div class="col">
+            <h1 class="info">{{restaurant.name}}</h1>
+            <p class="d-none" id="restaurantId">{{restaurant.id}}</p>
+            {{!-- <div class="info"> --}}
+            <p class="info"><i class="fa-solid fa-location-dot"></i>  {{restaurant.address}}</p>
+            <p class="info"><i class="fa-solid fa-phone"></i> {{restaurant.tel}}</p>
+            {{!-- </div> --}}
+        </div>
+        
+        
+        <div class="info text-center col" style="width:50%;">
+            <iframe src="{{mapSrc}}" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    
     </div>
     <hr>
     <form class="reservation" action="/booking/{{restaurant.id}}" method="POST">

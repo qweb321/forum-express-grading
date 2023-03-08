@@ -18,7 +18,8 @@ const restaurantController = {
 
       const availableTime = await AvailableTime.findAll({
         where: {
-          restaurantId: req.params.id
+          restaurantId: req.params.id,
+          isAvailable: true
         },
         attributes: ['id', 'time'],
         raw: true
