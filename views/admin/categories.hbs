@@ -1,6 +1,6 @@
 {{> admin-tab route='categories'}}
 
-<div class="d-flex align-items-center pt-3 pb-5 my-3 text-white-50 bg-purple">
+<div class="d-flex align-items-center pt-3 pb-3 my-3 text-white-50 bg-purple">
 {{#if category}}
   <form class="row" action="/admin/categories/{{category.id}}?_method=PUT" method="POST">
     <div class="col-auto">
@@ -22,8 +22,6 @@
   </form>
 {{/if}}
 </div>
-<br />
-<br />
 <table class="table align-middle">
   <thead class="thead-dark">
     <tr>

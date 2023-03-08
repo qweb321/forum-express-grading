@@ -1,0 +1,153 @@
+<h3>Reservation</h3>
+<h5>Available Time</h5>
+<button type="button" class="btn btn-success" onclick="addTime()">Add new available time</button>
+<p>(double click form to edit and click edit button to save)</p>
+<div class="d-flex align-items-center pt-3 pb-3 my-3 text-white-50 bg-purple">
+  <table class="table align-middle">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">#</th>
+        <th scope="col">Open Time</th>
+        <th scope="col">Available</th> 
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody class="reservation-time">
+      {{#each times}}
+        <tr class="text-center">
+            <th scope="row">{{this.id}}</th>
+            <td style="width: 10rem;"><input class="reservation-input form-control-plaintext" type="time" name="availableTime" value="{{this.time}}" form="edit-time-form-{{this.id}}" onfocusout="looseFocusTime()" style="text-align:center;" readonly></td>
+            <td><input  class="reservation-input form-control-plaintext mx-auto" type="checkbox" name="isAvailable" {{#ifCond this.isAvailable 1}} checked {{/ifCond}} form="edit-time-form-{{this.id}}" style="width: 2rem"></td>
+            <td>
+              <form action="/admin/reservations/{{this.id}}/time?_method=PUT" method="POST" id="edit-time-form-{{this.id}}" style="display: inline;">
+                <button type="submit" class="btn btn-link reservation-edit" form="edit-time-form-{{this.id}}">Edit</button>
+              </form>
+            </td>
+          <td>
+            <form action="/admin/reservations/{{this.id}}/time?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除嗎？`)">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<hr>
+
+<h5>Table</h5>
+<button type="button" class="btn btn-success" onclick="addTable()">Add new table name</button>
+<p>(double click form to edit and click edit button to save)</p>
+<div class="d-flex align-items-center pt-3 pb-3 my-3 text-white-50 bg-purple">
+  <table class="table align-middle">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Capacity</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody class="reservation-table-set">
+      {{#each tables}}
+        <tr class="text-center">
+            <th scope="row">{{this.id}}</th>
+            <td style="width: 10rem;"><input class="reservation-table form-control-plaintext" type="text" name="tableName" value="{{this.name}}" form="edit-table-form-{{this.id}}" onfocusout="looseFocus()" style="text-align:center;" readonly></td>
+            <td><input  class="reservation-table form-control-plaintext mx-auto" type="text" name="capacity" value="{{this.capacity}}" form="edit-table-form-{{this.id}}" onfocusout="looseFocus()" style="width: 2rem" readonly></td>
+            <td>
+              <form action="/admin/reservations/{{this.id}}/table?_method=PUT" method="POST" id="edit-table-form-{{this.id}}" style="display: inline;">
+                <button type="submit" class="btn btn-link reservation-edit" form="edit-table-form-{{this.id}}">Edit</button>
+              </form>
+            </td>
+          <td>
+            <form action="/admin/reservations/{{this.id}}/table?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-link link-danger" onclick="return confirm(`確定要刪除嗎？`)">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+
+
+<script>
+  const editTimes = document.querySelectorAll(".reservation-input")
+  editTimes.forEach((input) =>
+    input.addEventListener("dblclick", function onInputClick() {
+      console.log(this)
+      if (this.type === 'time'){
+        input.removeAttribute('readonly')
+      }
+    })
+  )
+
+function looseFocusTime() {
+   document.querySelectorAll(".reservation-input").forEach((input) => {
+    if (input.readOnly === false) {
+      input.readOnly = true
+    }
+   })
+}
+
+function cancelCreate() {
+  document.querySelector('.create-row').remove()
+}
+
+function addTime() {
+  const newRow = document.querySelector(".reservation-time").insertRow(-1)
+    newRow.classList.add("create-row", "text-center")
+    newRow.innerHTML = `
+    
+      <th scope="row"></th>
+      <td><input class="reservation-input" type="time" name="availableTime" form="create-form" required ></td>
+      <td><input  class="reservation-input" type="checkbox" name="isAvailable"  form="create-form" style="width: 2rem"></td>
+      <td>
+        <form action="/admin/reservations/create/time/{{restaurant.id}}" method="POST" id="create-form" style="display: inline";>
+          <button type="submit" class="btn btn-link" form="create-form">Create</button>
+        </form>
+      </td>
+      <td><button class="btn btn-outline-secondary" onclick="cancelCreate()">Cancel</a></td>
+  `
+}
+
+
+const editTables = document.querySelectorAll(".reservation-table")
+  editTables.forEach((input) =>
+    input.addEventListener("dblclick", function onInputClick() {
+      input.removeAttribute('readonly')
+    })
+  )
+
+
+function looseFocus() {
+   document.querySelectorAll(".reservation-table").forEach((input) => {
+    if (input.readOnly === false) {
+      input.readOnly = true
+    }
+   })
+}
+
+
+function addTable() {
+  const newRow = document.querySelector(".reservation-table-set").insertRow(-1)
+    newRow.classList.add("create-row", "text-center")
+    newRow.innerHTML = `
+    
+      <th scope="row"></th>
+      <td><input class="reservation-input" type="text" name="tableName" form="create-form" required ></td>
+      <td><input  class="reservation-input" type="text" name="capacity"  form="create-form" style="width: 2rem"></td>
+      <td>
+        <form action="/admin/reservations/create/table/{{restaurant.id}}" method="POST" id="create-form" style="display: inline";>
+          <button type="submit" class="btn btn-link" form="create-form">Create</button>
+        </form>
+      </td>
+      <td><button class="btn btn-outline-secondary" onclick="cancelCreate()">Cancel</a></td>
+  `
+}
+
+</script>

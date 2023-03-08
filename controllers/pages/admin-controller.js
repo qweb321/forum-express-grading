@@ -1,4 +1,4 @@
-const { Restaurant, Category, User } = require('../../models')
+const { Restaurant, Category, User, Table, AvailableTime } = require('../../models')
 const { imgurFileHandler } = require('../../helpers/file-helpers')
 const adminServices = require('../../services/admin-services')
 
@@ -24,14 +24,23 @@ const adminController = {
   },
 
   getRestaurant: (req, res, next) => {
-    Restaurant.findByPk(req.params.id, {
+    Promise.all([Restaurant.findByPk(req.params.id, {
       raw: true,
       nest: true,
       include: [Category]
+    }),
+    Table.findAll({
+      where: { restaurantId: req.params.id },
+      raw: true
+    }),
+    AvailableTime.findAll({
+      where: { restaurantId: req.params.id },
+      raw: true
     })
-      .then(restaurant => {
+    ])
+      .then(([restaurant, tables, times]) => {
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        res.render('admin/restaurant', { restaurant })
+        res.render('admin/restaurant', { restaurant, tables, times })
       })
       .catch(err => next(err))
   },
@@ -85,25 +94,21 @@ const adminController = {
   },
 
   getUsers: (req, res, next) => {
-    return User.findAll({ raw: true })
+    User.findAll({ raw: true })
       .then(users => {
         res.render('admin/users', { users })
       })
       .catch(err => next(err))
   },
   patchUser: (req, res, next) => {
-    return User.findByPk(req.params.id)
+    User.findByPk(req.params.id)
       .then(user => {
-        if (user.email === 'root@example.com') {
-          req.flash('error_messages', '禁止變更 root 權限')
-          return res.redirect('back')
+        console.log(user.isAdmin)
+        if (user.isAdmin) {
+          return user.update({ isAdmin: false })
+        } else {
+          return user.update({ isAdmin: true })
         }
-
-        return user.update({ isAdmin: !user.isAdmin })
-          .then(() => {
-            req.flash('success_messages', '使用者權限變更成功')
-            return res.redirect('/admin/users')
-          })
       })
       .then(() => {
         req.flash('success_messages', 'user was successfully to update')

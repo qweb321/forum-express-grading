@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../../../controllers/pages/admin-controller')
 const categoryController = require('../../../controllers/pages/category-controller')
+const reserveInfoController = require('../../../controllers/pages/reserveInfo-controller')
 const upload = require('../../../middleware/multer')
 
 router.get('/categories/:id', categoryController.getCategories)
@@ -13,6 +14,13 @@ router.post('/categories', categoryController.postCategories)
 
 router.patch('/users/:id', adminController.patchUser)
 router.get('/users', adminController.getUsers)
+
+router.post('/reservations/create/table/:id', reserveInfoController.postTable)
+router.post('/reservations/create/time/:id', reserveInfoController.postAvailableTime)
+router.put('/reservations/:id/table', reserveInfoController.putTable)
+router.put('/reservations/:id/time', reserveInfoController.putAvailableTime)
+router.delete('/reservations/:id/time', reserveInfoController.deleteAvailableTime)
+router.delete('/reservations/:id/table', reserveInfoController.deleteTable)
 
 router.get('/restaurants/create', adminController.createRestaurant)
 router.get('/restaurants/:id/edit', adminController.editRestaurant)

@@ -1,18 +1,5 @@
 {{> search-bar}}
 
-{{> restaurant-tabs route="index"}}
-
-<ul class="nav nav-pills">
-  <li class="nav-item">
-    <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
-  </li>
-  {{#each categories}}
-    <li class="nav-item">
-      <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
-        href="?categoryId={{this.id}}">{{this.name}}</a>
-    </li>
-  {{/each}}
-</ul>
 <div class="row mt-3">
   {{#each restaurants}}
     <div class="col-md-4">
@@ -27,27 +14,27 @@
               {{this.name}}
             </a>
           </p>
-          <span class="badge bg-secondary">{{#ifCond this.Category.name null}}未分類{{else}}{{this.Category.name}}{{/ifCond}}</span>
+          <span class="badge bg-secondary">{{this.Category.name}}</span>
           <p class="card-text text-truncate">{{this.description}}</p>
           <div class="d-flex">
             <div class="d-flex">
               {{#if this.isFavorited}}
                 <form action="/favorite/{{this.id}}?_method=DELETE" method="POST">
-                  <button type="submit" class="btn btn-primary m-1"><i class="fa-solid fa-bookmark"></i></button>
+                  <button type="submit" class="btn btn-danger m-1">移除最愛</button>
                 </form>
               {{else}}
                 <form action="/favorite/{{this.id}}" method="POST">
-                  <button type="submit" class="btn btn-outline-primary m-1"><i class="fa-regular fa-bookmark"></i></button>
+                  <button type="submit" class="btn btn-primary m-1">加到最愛</button>
                 </form>
               {{/if}}
               <div class="d-flex">
               {{#if this.isLiked}}
                 <form action="/like/{{this.id}}?_method=DELETE" method="POST">
-                  <button type="submit" class="btn btn-warning m-1"><i class="fa-solid fa-thumbs-up"></i></button>
+                  <button type="submit" class="btn btn-danger m-1">Unlike</button>
                 </form>
               {{else}}
                 <form action="/like/{{this.id}}" method="POST">
-                  <button type="submit" class="btn btn-outline-warning m-1"><i class="fa-regular fa-thumbs-up"></i></button>
+                  <button type="submit" class="btn btn-primary m-1">Like</button>
                 </form>
               {{/if}}
             </div>
@@ -59,10 +46,11 @@
     </div>
   {{/each}}
 </div> 
-<nav class="d-flex justify-content-center mt-3" aria-label="page navigation">
-  <ul class="pagination">
+
+<nav class="mt-3" aria-label="page navigation">
+  <ul class="pagination justify-content-center">
     <li class="page-item {{#ifCond pagination.currentPage 1}}disabled{{/ifCond}}">
-      <a class="page-link" href="/restaurants?page={{pagination.prev}}&categoryId={{categoryId}}" aria-label="Previous">
+      <a class="page-link" href="/restaurants?page={{pagination.prev}}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
@@ -71,12 +59,12 @@
         <li class="page-item active"><a class="page-link" href="#">{{this}}</a></li>
       {{else}}
         <li class="page-item">
-          <a class="page-link" href="/restaurants?page={{this}}&categoryId={{../categoryId}}">{{this}}</a>
+          <a class="page-link" href="/restaurants?page={{this}}">{{this}}</a>
         </li>
       {{/ifCond}}
     {{/each}}
     <li class="page-item {{#ifCond pagination.currentPage pagination.totalPage}}disabled{{/ifCond}}">
-      <a class="page-link" href="/restaurants?page={{pagination.next}}&categoryId={{categoryId}}" aria-label="Next">
+      <a class="page-link" href="/restaurants?page={{pagination.next}}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="card col" style="width: 18rem;">
+        <img class="card-img-top mt-2" src="{{restaurant.image}}" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title"><i class="fa-solid fa-location-dot"></i> {{restaurant.name}}</h5>
+            <p class="card-text"><i class="fa-regular fa-user"></i> {{adult}}大{{children}}小</p>
+            <p class="card-text"><i class="fa-regular fa-calendar-check"></i> {{orderTime}}</p>
+            <p class="card-text"><i class="fa-regular fa-clock"></i> {{reservedTime}}</p>
+        </div>
+    </div>
+    <div class="card col">
+        <h2 class="mx-auto mt-3">確認訂位及填寫聯絡資訊</h2>
+        <form action="/booking/{{restaurant.id}}/form" method="POST">
+            <div class="card-body p-2">
+                <div class="mb-3 row">
+                    <label for="name" class="form-label">訂位人姓名</label>
+                    <div class="col">
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="col form-check gender mt-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="female" value="小姐">
+                            <label class="form-check-label" for="female">小姐</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" id="male" value="先生">
+                            <label class="form-check-label" for="male">先生</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                        <label for="phone" class="form-label">訂位人手機號碼</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" onfocusout="looseFocus()" required>
+                </div>
+                <div class="mb-3">
+                        <label for="email" class="form-label">訂位人Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="text" class="d-none" id="adult" name="adult" value="{{adult}}">
+                        <input type="text" class="d-none" id="children" name="children" value="{{children}}">
+                        <input type="text" class="d-none" id="date" name="date" value="{{orderTime}}">
+                        <input type="text" class="d-none" id="time" name="time" value="{{reservedTime}}">
+                </div>
+                <div class="mb-3">
+                        <label for="remark" class="form-label">其他備註</label>
+                        <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="有任何需求嗎？可以在這和我們說哦！"></textarea>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">確認訂位</button>
+                    <a class="btn btn-outline-secondary" href="javascript:history.back()">回上一頁</a>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+</div>
+
+<script>
+    const phoneNumber = document.querySelector('#phone')
+    function looseFocus () {
+        if (isNaN(phoneNumber.value)) {
+            alert('手機號碼格式錯誤！')
+        }
+    }
+</script>

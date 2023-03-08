@@ -1,52 +1,82 @@
-# README
+# Restaurant reservation forum
 
-1. Fork
-2. git clone
+Restaurant reservation forum bulit with Node.js and MySQL for searching restauransts, leaving comments and making reservation with an account 
 
-## 初始化
-### Initialize
-```
-git remote add upstream https://github.com/ALPHACamp/forum-express-grading.git  # 建立上游連線
-npm install
-```
+## Table of contents
 
-### 設定資料庫
-需要與 config/config.json 一致
+- [Overview](#Overview)
+- [Screenshot](#Screenshot)
+- [Installation](#Installation)
+- [Built with](#built-with)
+- [Author](#author)
 
-```
-create database forum;
-```
+## Overview
+- Login or logout with account
+- login with Facebook or Googel
+- Searching time or restaurants you want to reserve
+- Making reservation and after that it will mail you 
+- Admin can create new restaurants, add or edit avaliable time for booking and manage account permission
 
-### 執行測試
-```
-npm run test
-```
 
-## 下載作業規格
-以 R01 為例
+## Screenshot
 
-```
-git checkout -b R01           # 開新分支
-git merge origin/R01-test     # 下載作業規格
-npm run test                  # 直到綠燈全亮
+![Screenshot](reservation.png)
+![Screenshot](finished.png)
 
-git add .
-git commit -m "...."
-```
 
-## 繳交作業
+
+## Installation
+
+1. Open your terminal and use 'git clone' to copy this project to local.
 
 ```
-git push origin R01           # 上傳本地進度
+git clone https://github.com/qweb321/forum-express-grading/tree/feature
+```
+2. Install all dependencies.
+```
+ npm install
+ ```
+3. Run all migrations and seeders.
+```
+npx sequelize db:migrate
+npx sequelize db:seed:all
+```
+4. After installation finished, create an `.env` file to past all code from `.env.example` file
+
+5. After creating database done, run
+
+```
+npm run start
 ```
 
-接著改成到 GitHub 來發 PR。
+6. If terminal show the sentence below, means run successfully and click the url
 
-## 共用帳號
-請一律設定下面 2 組帳號以利驗收：
-* 第一組帳號有 admin 權限：
+```
+app is listening in http://localhost:3000
+```
+
+7. If you want to stop
+
+```
+ctrl + C
+```
+
+8. Test Account
+
+ 
+* admin 
   * email: root@example.com
   * password: 12345678
-* 第二組帳號沒有 admin 權限：
+* user：
   * email: user1@example.com
   * password: 12345678
+  ## Built with
+
+- Node.js
+- Express
+- Express-Handlebars
+- Javascript
+- Dotenv
+- Mongoose
+- Passport
+- Bootstrap
