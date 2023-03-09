@@ -12,6 +12,8 @@ const { authenticated, authenticatedAdmin } = require('../../middleware/auth')
 
 router.use('/admin', authenticatedAdmin, admin)
 router.use('/users', authenticated, user)
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }))
+router.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
 
 router.get('/signup', userController.signUppage)
 router.post('/signup', userController.signUp)
