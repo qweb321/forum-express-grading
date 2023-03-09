@@ -3,7 +3,7 @@
         <div class="mb-3">
             <img src="{{restaurant.image}}" class="d-flex" alt="" width="100%">
         </div>
-        <div class="col">
+        <div class="col-lg">
             <h1 class="info">{{restaurant.name}}</h1>
             <p class="d-none" id="restaurantId">{{restaurant.id}}</p>
             {{!-- <div class="info"> --}}
@@ -13,7 +13,7 @@
         </div>
         
         
-        <div class="info text-center col" style="width:50%;">
+        <div class="info text-center col-lg" style="width:50%;">
             <iframe src="{{mapSrc}}" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     
@@ -22,9 +22,9 @@
     <form class="reservation" action="/booking/{{restaurant.id}}" method="POST">
         <div class="choose row">
             <div class="col choose-person">
-                <p>用餐人數</p>
-                <div class="row person-select ms-1">
-                    <select class="col me-2 form-select" name="adult" id="adult">
+                <p class="mt-2">用餐人數</p>
+                <div class="row person-select m-1">
+                    <select class="col-lg me-2 form-select" name="adult" id="adult">
                         <option value="1" id="1" {{#ifCond '1' adult}} selected {{/ifCond}}>1位大人</option>
                         <option value="2" id="2" {{#ifCond '2' adult}} selected {{/ifCond}}>2位大人</option>｀
                         <option value="3" id="2" {{#ifCond '3' adult}} selected {{/ifCond}}>3位大人</option>
@@ -32,7 +32,7 @@
                         <option value="5" {{#ifCond '5' adult}} selected {{/ifCond}}>5位大人</option>
                         <option value="6" {{#ifCond '6' adult}} selected {{/ifCond}}>6位大人</option>
                     </select>
-                     <select class="col form-select" name="children" id="children">
+                     <select class="col-lg me-2 form-select" name="children" id="children">
                         <option value="0" {{#ifCond '0' children}} selected {{/ifCond}}>0位小孩</option>
                         <option value="1" {{#ifCond '1' children}} selected {{/ifCond}}>1位小孩</option>
                         <option value="2" {{#ifCond '2' children}} selected {{/ifCond}}>2位小孩</option>
@@ -43,8 +43,8 @@
                     </select>
                 </div>
             </div>
-            <div class="col choose-time">
-                <p>用餐時間</p>
+            <div class="col-md-6 choose-time">
+                <p class="mt-2">用餐時間</p>
                 <div class="time-select">
                     <input type="date" class="form-control" id="orderTime" name="orderTime" min="" value="{{orderTime}}">
                 </div>
