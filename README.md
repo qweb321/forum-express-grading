@@ -16,7 +16,7 @@ The platform is deployed now on Heroku. click [link](https://stark-hamlet-62372.
 
 ## Overview
 - Login or logout with account
-- login with Facebook or Googel
+- login with Facebook
 - Searching time or restaurants you want to reserve
 - Making reservation and after that it will mail you 
 - Admin can create new restaurants, add or edit avaliable time for booking and manage account permission
@@ -81,6 +81,6 @@ ctrl + C
 - Express-Handlebars
 - Javascript
 - Dotenv
-- Mongoose
+- MySQL
 - Passport
 - Bootstrap
